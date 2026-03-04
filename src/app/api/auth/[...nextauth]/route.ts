@@ -7,12 +7,14 @@ declare module "next-auth" {
     user: {
       id: string;
       role?: string;
+      name: string;
     };
   }
 
   interface User {
     accessToken?: string;
     role?: string;
+    name: string;
   }
 }
 
@@ -20,6 +22,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     accessToken?: string;
     role?: string;
+    name: string;
   }
 }
 const handler = NextAuth({
@@ -37,13 +40,18 @@ const handler = NextAuth({
             password: credentials?.password,
           });
 
-          const user = res.data;
+          const data = res.data;
 
-          if (!user) return null;
+          if (!data) return null;
 
-          return user;
-        } catch (error) {
-          if (error) return null;
+          return {
+            id: data.admin.id,
+            name: data.admin.username,
+            role: "ADMIN",
+            accessToken: data.access_token,
+          };
+        } catch {
+          return null;
         }
       },
     }),
@@ -54,14 +62,22 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.accessToken;
+        token.sub = user.id;
         token.role = user.role;
+        token.accessToken = user.accessToken;
+        token.name = user.name;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.role = token.role as string;
+      session.user = {
+        id: token.sub as string,
+        role: token.role as string,
+        name: token.name as string,
+      };
+
       session.accessToken = token.accessToken as string;
+
       return session;
     },
   },
