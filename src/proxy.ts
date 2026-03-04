@@ -15,8 +15,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // 🔥 ถ้าไม่ได้ login และพยายามเข้า protected route
-  if (!token && pathname !== "/login") {
+  // 🔒 ป้องกันเฉพาะ path ที่ต้อง auth
+  const protectedPaths = ["/dashboard", "/admin"];
+
+  const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
+
+  if (!token && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
