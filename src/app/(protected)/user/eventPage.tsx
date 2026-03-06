@@ -20,14 +20,14 @@ export default function EventPage() {
           <div className="max-w-md">
             <p className=" mb-5 text-5xl font-bold">SEAT EVENT</p>
 
-            <p className="mb-5">
+            <p className="mb-5 text-1xl font-bold text-gray-300">
               Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
               et a id nisi.
             </p>
             <button
               onClick={() => router.push("/user/eventRegistration")}
-              className="text-1xl btn btn-primary"
+              className="text-2xl btn pb-1 btn-accent"
             >
               Register
             </button>
@@ -38,7 +38,6 @@ export default function EventPage() {
           </div>
         </div>
       </div>
-      <div className="hero"></div>
     </div>
   );
 }

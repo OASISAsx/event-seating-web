@@ -16,4 +16,12 @@ export interface useRegistrationStore {
   registration: Registration[];
   loading: boolean;
   fetchRegistration: () => Promise<void>;
+  createRegistration: (payload: CreateRegistration) => Promise<void>;
+}
+
+export interface CreateRegistration {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  seatId: string;
 }
