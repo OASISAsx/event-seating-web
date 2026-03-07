@@ -3,27 +3,38 @@ import { useEvent } from "@/store/event.store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import DialogCreate from "./dialogCreate";
+import { Events } from "@/types/event.interface";
+import Skeleton from "@/src/app/components/Skeleton";
 
 export default function EventPage() {
   const { events, fetchEvent, loading } = useEvent();
   const [isOpen, setIsOpen] = useState(false);
+  const [itemSelect, setItemSelect] = useState<Events | null>(null);
 
   useEffect(() => {
     fetchEvent();
   }, [fetchEvent]);
 
-  return (
-    <div className="p-10 font-bold">
-      <div className="divider text-3xl">Event List</div>
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {loading && <span className="loading loading-ring loading-xl"></span>}
+  const selectItem = (item: Events) => {
+    setItemSelect(item);
+    setIsOpen(true);
+  };
 
+  return (
+    <div className="p-4 font-bold">
+      <div className="divider text-3xl font-bold tracking-wide text-primary">
+        <h1 className="text-3xl font-semibold">
+          <span className="badge badge-xl badge-neutral"> Event List</span>
+        </h1>
+      </div>
+      {loading && <Skeleton />}
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {events.map((item) => (
-          <div key={item.id} className="card bg-base-100 shadow-sm">
+          <div key={item.id} className="card bg-neutral-content shadow-sm">
             <figure className="relative h-88">
               <Image
                 src="/seat_event.png"
-                alt="Shoes"
+                alt="seat_event"
                 fill
                 className="object-cover"
               />
@@ -36,20 +47,20 @@ export default function EventPage() {
 
               <div className="card-actions justify-end">
                 <button
-                  onClick={() => setIsOpen(true)}
-                  className="btn btn-primary"
+                  onClick={() => selectItem(item)}
+                  className="btn btn-primary rounded-3xl text-white"
                 >
-                  Register Event
+                  Select Event
                 </button>
               </div>
             </div>
-            <DialogCreate
-              fetchData={item}
-              dialog={isOpen}
-              onClose={() => setIsOpen(false)}
-            />
           </div>
         ))}
+        <DialogCreate
+          fetchData={itemSelect}
+          dialog={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
       </div>
     </div>
   );

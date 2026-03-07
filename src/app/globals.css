@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes:
     light --default,
@@ -12,7 +13,7 @@
   prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
   color-scheme: light; /* color of browser-provided UI */
 
-  --color-base-100: oklch(98% 0.02 240);
+  /* --color-base-100: oklch(98% 0.02 240);
   --color-base-200: oklch(95% 0.03 240);
   --color-base-300: oklch(92% 0.04 240);
   --color-base-content: oklch(20% 0.05 240);
@@ -32,7 +33,31 @@
   --color-warning: oklch(80% 0.25 80);
   --color-warning-content: oklch(20% 0.05 80);
   --color-error: oklch(79% 0.3 30);
-  --color-error-content: oklch(98% 0.01 30);
+  --color-error-content: oklch(98% 0.01 30); */
+
+  --color-base-100: oklch(18% 0.03 280);
+  --color-base-200: oklch(22% 0.04 280);
+  --color-base-300: oklch(26% 0.05 280);
+  --color-base-content: oklch(96% 0.02 280);
+
+  --color-primary: oklch(70% 0.28 285);
+  --color-primary-content: oklch(10% 0.02 285);
+
+  --color-secondary: oklch(65% 0.25 310);
+  --color-secondary-content: oklch(10% 0.02 310);
+
+  --color-accent: oklch(70% 0.25 330);
+  --color-accent-content: oklch(10% 0.02 330);
+
+  --color-neutral: oklch(30% 0.04 280);
+  --color-neutral-content: oklch(95% 0.02 280);
+
+  --color-info: oklch(70% 0.2 250);
+  --color-success: oklch(65% 0.25 160);
+  --color-warning: oklch(80% 0.25 90);
+  --color-error: oklch(70% 0.3 30);
+
+  --color-comment: oklch(60% 0.02 300);
 
   /* border radius */
   --radius-selector: 1rem;
@@ -53,8 +78,9 @@
 
 :root {
   --color-base-100: #ffffff;
+  color: #08080f;
 }
-.card {
+/* .card {
   background: #ffffff;
   width: 100%;
   .card-title {
@@ -64,7 +90,7 @@
   p {
     color: gray;
   }
-}
+} */
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -89,3 +115,291 @@ body {
     --foreground: #ededed;
   }
 } */
+input {
+  border: 1px solid rgb(185, 185, 185);
+}
+.ep-root {
+  min-height: 100vh;
+  background: #08080f;
+  font-family: "Outfit", sans-serif;
+}
+
+/* ── Hero ── */
+.ep-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ep-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url(/seat_event.png);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.06);
+  animation: ep-slow-zoom 18s ease-in-out infinite alternate;
+}
+
+@keyframes ep-slow-zoom {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+/* layered overlays */
+.ep-overlay-1 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 8, 15, 0.55) 0%,
+    rgba(8, 8, 15, 0.25) 40%,
+    rgba(8, 8, 15, 0.72) 80%,
+    rgba(8, 8, 15, 1) 100%
+  );
+}
+.ep-overlay-2 {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(99, 102, 241, 0.18) 0%,
+    transparent 65%
+  );
+}
+
+/* ── Content ── */
+.ep-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 760px;
+  width: 100%;
+}
+
+.ep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 28px;
+  animation: ep-fade-up 0.7s ease both 0.1s;
+}
+.ep-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+  animation: ep-ping 1.8s ease-in-out infinite;
+}
+@keyframes ep-ping {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.4;
+  }
+}
+
+.ep-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(72px, 13vw, 140px);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: #fff;
+  margin: 0 0 8px;
+  animation: ep-fade-up 0.8s ease both 0.2s;
+}
+.ep-title-accent {
+  background: linear-gradient(90deg, #1f2049, #624e9e, #1e205f);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation:
+    ep-shimmer 4s linear infinite,
+    ep-fade-up 0.8s ease both 0.2s;
+}
+@keyframes ep-shimmer {
+  from {
+    background-position: 0% center;
+  }
+  to {
+    background-position: 200% center;
+  }
+}
+
+.ep-sub {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.42);
+  max-width: 440px;
+  margin: 18px auto 36px;
+  animation: ep-fade-up 0.8s ease both 0.35s;
+}
+
+/* CTA Button */
+.ep-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 44px;
+  font-family: "Outfit", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.45);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  animation: ep-fade-up 0.8s ease both 0.48s;
+}
+.ep-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 60%
+  );
+  border-radius: inherit;
+}
+.ep-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 48px rgba(99, 102, 241, 0.6);
+}
+.ep-btn:active {
+  transform: translateY(0);
+}
+.ep-btn svg {
+  transition: transform 0.2s ease;
+}
+.ep-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* scroll hint */
+.ep-scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: ep-fade-up 1s ease both 1s;
+}
+.ep-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  animation: ep-scroll-line 1.8s ease-in-out infinite;
+}
+@keyframes ep-scroll-line {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleY(0.5);
+    opacity: 1;
+  }
+}
+
+/* ── Table section ── */
+.ep-section {
+  position: relative;
+  z-index: 10;
+  background: #08080f;
+  padding: 72px 24px 96px;
+}
+.ep-section-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.ep-section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.ep-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.08), transparent);
+}
+.ep-section-title {
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+.ep-section-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.ep-table-wrap {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: white;
+  border-radius: 20px;
+  overflow: hidden;
+  /* backdrop-filter: blur(12px); */
+}
+
+/* fade-up keyframe */
+@keyframes ep-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

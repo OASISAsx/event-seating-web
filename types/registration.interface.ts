@@ -6,6 +6,7 @@ export interface Registration {
   firstName: string;
   lastName: string;
   phone: string;
+  email: string;
   eventId: string;
   event: Events;
   seatId: string;
@@ -15,6 +16,9 @@ export interface Registration {
 export interface useRegistrationStore {
   registration: Registration[];
   loading: boolean;
+  error: {
+    message: string;
+  } | null;
   fetchRegistration: () => Promise<void>;
   createRegistration: (payload: CreateRegistration) => Promise<void>;
 }
@@ -23,5 +27,6 @@ export interface CreateRegistration {
   firstName: string;
   lastName: string;
   phone: string;
-  seatId: string;
+  email: string;
+  eventId?: string;
 }

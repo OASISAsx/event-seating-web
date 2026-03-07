@@ -1,12 +1,12 @@
 "use client";
-import { createRegistrationSeat } from "@/services/registration.service";
+import { useRegistration } from "@/store/registration.store";
 import { Events } from "@/types/event.interface";
 import React, { useState } from "react";
 
 type Props = {
   dialog: boolean;
   onClose: () => void;
-  fetchData: Events;
+  fetchData: Events | null;
 };
 
 export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
@@ -14,10 +14,20 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
     firstName: "",
     lastName: "",
     phone: "",
-    seatId: fetchData.id,
+    email: "",
+    eventId: fetchData?.id,
   });
+  const { createRegistration } = useRegistration();
   if (!dialog) return null;
-
+  const resetForm = () => {
+    setPayload({
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      eventId: fetchData?.id,
+    });
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -28,20 +38,29 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
   };
 
   const handleSubmit = async () => {
-    await createRegistrationSeat(payload);
+    console.log(fetchData, "fetchData");
+    console.log(fetchData?.id, "fetchData");
+    await createRegistration(payload);
+    resetForm();
+    onClose();
+  };
+
+  const closeDialog = async () => {
+    resetForm();
+    onClose();
   };
 
   return (
-    <dialog className="modal modal-open">
-      <div className="modal-box w-900 max-w-2xl h-[45vh] flex flex-col">
+    <dialog className="modal modal-open ">
+      <div className="modal-box w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl  flex flex-col">
         <h3 className="font-bold text-lg">{fetchData?.name}</h3>
         <div className="divider divider-start"></div>
 
         {/* content */}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+        <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-x-4 gap-y-10">
           <input
             name="firstName"
-            className="input w-full col-span-2"
+            className="input w-full"
             value={payload.firstName}
             onChange={handleChange}
             placeholder="Full Name"
@@ -61,15 +80,33 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
             placeholder="Phone"
             name="phone"
           />
+          <input
+            className="input w-full"
+            value={payload.email}
+            type="phone"
+            onChange={handleChange}
+            placeholder="Email"
+            name="email"
+          />
+        </div>
+
+        <div className="pt-10">
+          <p className="text-gray-500 text-xs">
+            <span className="text-error">*</span>
+            เมื่อลงทะเบียนแล้วระบบจะส่งหมายเลขที่นั่งไปยัง Email
+          </p>
         </div>
 
         {/* footer */}
-        <div className="modal-action mt-auto">
-          <button className="btn btn-accent" onClick={handleSubmit}>
-            SAVE
+        <div className="modal-action mt-auto pt-10">
+          <button
+            className="btn btn-success text-white rounded-3xl"
+            onClick={handleSubmit}
+          >
+            Register Event
           </button>
 
-          <button className="btn btn-ghost" onClick={onClose}>
+          <button className="btn btn-ghost rounded-3xl" onClick={closeDialog}>
             Close
           </button>
         </div>

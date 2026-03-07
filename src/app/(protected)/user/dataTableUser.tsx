@@ -8,25 +8,37 @@ export const DataTableUser = () => {
 
   useEffect(() => {
     fetchRegistration();
+    registration.slice(-5);
   }, [fetchRegistration]);
 
-  const latestFive = registration.slice(-5).reverse();
-
   return (
-    <div className="absolute bottom-0 p-4">
+    <div>
       {loading && <span className="loading loading-ring loading-xl"></span>}
-
-      <p className="font-semibold">การลงทะเบียนล่าสุด</p>
-
-      {latestFive.map((item) => (
-        <div
-          className="flex items-center gap-2 pt-2 animate-slideDown"
-          key={item.id}
-        >
-          <User size={18} />
-          {item.firstName} {item.lastName}
-        </div>
-      ))}
+      <div className="overflow-x-auto bg-neutral">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Event</th>
+            </tr>
+          </thead>
+          {registration.map((item) => (
+            <tbody key={item.id} className="text-white">
+              <tr className="hover:bg-base-300">
+                <td>
+                  <p className="flex items-center">
+                    <span>
+                      <User />
+                    </span>
+                    {item.firstName} {item.lastName}
+                  </p>
+                </td>
+                <td>{item.event?.name}</td>
+              </tr>
+            </tbody>
+          ))}
+        </table>
+      </div>
     </div>
   );
 };

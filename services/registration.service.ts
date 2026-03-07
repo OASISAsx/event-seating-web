@@ -1,8 +1,5 @@
 import { api } from "@/src/lib/axios";
-import {
-  CreateRegistration,
-  Registration,
-} from "@/types/registration.interface";
+import { CreateRegistration } from "@/types/registration.interface";
 
 export const getRegistrations = async () => {
   const response = await api.get("/registration");
