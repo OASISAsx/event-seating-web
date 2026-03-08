@@ -12,6 +12,7 @@ import {
 export type ColumnDef<T> = {
   key: string;
   label: string;
+  width: string;
   render?: (row: T) => React.ReactNode;
 };
 
@@ -84,8 +85,10 @@ export default function DataTable<T extends { id: string | number }>({
         <table className="table w-full">
           <thead>
             <tr>
-              {headers.map((col) => (
-                <th key={col.key}>{col.label}</th>
+              {headers.map((h) => (
+                <th key={h.key} style={{ width: h.width }}>
+                  {h.label}
+                </th>
               ))}
             </tr>
           </thead>
@@ -115,30 +118,36 @@ export default function DataTable<T extends { id: string | number }>({
             )}
           </tbody>
         </table>
+        <div className="divider divider-start"></div>
       </div>
-      <div className="divider divider-start"></div>
+
       {/* Pagination */}
       <div className="flex items-center justify-between px-1">
         {/* Info + page size */}
         <div className="flex items-center gap-2 text-sm text-gray-400">
-          <p className="w-60">
-            {from}–{to} of {total} items
-          </p>
-          <select
-            className="select select-bordered select-xs"
-            value={pageSize}
-            onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          >
-            {[5, 10, 20, 50].map((s) => (
-              <option key={s} value={s}>
-                {s} / page
-              </option>
-            ))}
-          </select>
+          <div className="">
+            <p>
+              {from}–{to} of {total} items
+            </p>
+          </div>
         </div>
-
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <select
+              className="select select-bordered select-sm  w-30"
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            >
+              {[5, 10, 20, 50].map((s) => (
+                <option key={s} value={s}>
+                  {s} / page
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         {/* Buttons */}
-        <div className="join">
+        <div className="join bg-comment rounded-sm">
           <button
             className="join-item btn btn-sm btn-ghost"
             onClick={() => onPageChange(1)}
@@ -156,13 +165,17 @@ export default function DataTable<T extends { id: string | number }>({
 
           {pages.map((p, i) =>
             p === "..." ? (
-              <button key={`e-${i}`} className="join-item btn btn-sm" disabled>
+              <button
+                key={`e-${i}`}
+                className="join-item btn   btn-sm"
+                disabled
+              >
                 …
               </button>
             ) : (
               <button
                 key={p}
-                className={`join-item btn btn-sm ${page === p ? "btn-active" : "btn-ghost"}`}
+                className={`join-item rounded-sm btn text-white btn-sm ${page === p ? "btn-primary" : "btn-ghost"}`}
                 onClick={() => onPageChange(p)}
               >
                 {p}

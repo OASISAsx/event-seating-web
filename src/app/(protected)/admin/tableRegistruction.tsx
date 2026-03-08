@@ -16,7 +16,7 @@ const headers = [
   { key: "event.name", width: "200px", label: "Event" },
 ];
 
-export default function DataTableUser() {
+export default function DataTableRegistration() {
   const {
     registration,
     loading,
