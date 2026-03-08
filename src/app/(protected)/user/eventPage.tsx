@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { DataTableUser } from "./dataTableUser";
+import DataTableUser from "./dataTableUser";
 
 export default function EventPage() {
   const router = useRouter();
@@ -8,14 +8,12 @@ export default function EventPage() {
   return (
     <>
       <div className="ep-root">
-        {/* ── Hero ── */}
         <section className="ep-hero">
           <div className="ep-bg" />
           <div className="ep-overlay-1" />
           <div className="ep-overlay-2" />
 
           <div className="ep-content">
-            {/* badge */}
             <div className="ep-badge">
               <span className="ep-badge-dot" />
               Grand Showcase · 2026
@@ -35,7 +33,6 @@ export default function EventPage() {
               et a id nisi.
             </p>
 
-            {/* CTA */}
             <button
               className="ep-btn"
               onClick={() => router.push("/user/eventRegistration")}

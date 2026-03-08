@@ -16,8 +16,10 @@ export default function EventPage() {
   }, [fetchEvent]);
 
   const selectItem = (item: Events) => {
-    setItemSelect(item);
-    setIsOpen(true);
+    if (item) {
+      setItemSelect(item);
+      setIsOpen(true);
+    }
   };
 
   return (

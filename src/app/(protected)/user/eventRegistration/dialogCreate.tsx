@@ -17,7 +17,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
     email: "",
     eventId: fetchData?.id,
   });
-  const { createRegistration } = useRegistration();
+  const { createRegistration, fetchRegistration } = useRegistration();
   if (!dialog) return null;
   const resetForm = () => {
     setPayload({
@@ -34,12 +34,11 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
     setPayload((prve) => ({
       ...prve,
       [name]: value,
+      eventId: fetchData?.id,
     }));
   };
 
   const handleSubmit = async () => {
-    console.log(fetchData, "fetchData");
-    console.log(fetchData?.id, "fetchData");
     await createRegistration(payload);
     resetForm();
     onClose();
@@ -47,6 +46,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
 
   const closeDialog = async () => {
     resetForm();
+    fetchRegistration();
     onClose();
   };
 
@@ -56,7 +56,6 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
         <h3 className="font-bold text-lg">{fetchData?.name}</h3>
         <div className="divider divider-start"></div>
 
-        {/* content */}
         <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-x-4 gap-y-10">
           <input
             name="firstName"
@@ -97,7 +96,6 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
           </p>
         </div>
 
-        {/* footer */}
         <div className="modal-action mt-auto pt-10">
           <button
             className="btn btn-success text-white rounded-3xl"

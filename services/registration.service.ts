@@ -1,8 +1,8 @@
 import { api } from "@/src/lib/axios";
 import { CreateRegistration } from "@/types/registration.interface";
 
-export const getRegistrations = async () => {
-  const response = await api.get("/registration");
+export const getRegistrations = async (params: URLSearchParams) => {
+  const response = await api.get(`/registration?${params}`);
   return response.data;
 };
 

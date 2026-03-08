@@ -1,44 +1,49 @@
 "use client";
-import React, { useEffect } from "react";
-import { useRegistration } from "@/store/registration.store";
-import { User } from "lucide-react";
+import { useEffect } from "react";
 
-export const DataTableUser = () => {
-  const { registration, fetchRegistration, loading } = useRegistration();
+import { Registration } from "@/types/registration.interface";
+import { useRegistration } from "@/store/registration.store";
+import DataTable from "../../components/Datatable";
+import { usePathname } from "next/navigation";
+const headers = [
+  {
+    key: "firstName",
+    label: "Name",
+  },
+  // { key: "phone", label: "Phone" },
+  // { key: "email", label: "Email" },
+  { key: "event.name", label: "Event" },
+];
+
+export default function DataTableUser() {
+  const {
+    registration,
+    loading,
+    total,
+    page,
+    pageSize,
+    fetchRegistration,
+    setPage,
+    setPageSize,
+  } = useRegistration();
+
+  const pathname = usePathname();
 
   useEffect(() => {
     fetchRegistration();
-    registration.slice(-5);
-  }, [fetchRegistration]);
-
+  }, [fetchRegistration, pathname]);
   return (
-    <div>
-      {loading && <span className="loading loading-ring loading-xl"></span>}
-      <div className="overflow-x-auto bg-neutral">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Event</th>
-            </tr>
-          </thead>
-          {registration.map((item) => (
-            <tbody key={item.id} className="text-white">
-              <tr className="hover:bg-base-300">
-                <td>
-                  <p className="flex items-center">
-                    <span>
-                      <User />
-                    </span>
-                    {item.firstName} {item.lastName}
-                  </p>
-                </td>
-                <td>{item.event?.name}</td>
-              </tr>
-            </tbody>
-          ))}
-        </table>
-      </div>
+    <div className="p-6 bg-neutral">
+      <DataTable<Registration>
+        headers={headers}
+        data={registration}
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={total}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
-};
+}
