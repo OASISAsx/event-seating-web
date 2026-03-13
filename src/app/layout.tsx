@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Outfit } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers"; // เปลี่ยนตรงนี้
 
 const bebas = Bebas_Neue({
   weight: "400",
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="mytheme">
       <body className={`${bebas.variable} ${outfit.variable} antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

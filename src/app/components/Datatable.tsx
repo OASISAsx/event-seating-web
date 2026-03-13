@@ -6,6 +6,9 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
+import ActionButtons from "./ActionButtons";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -71,11 +74,20 @@ export default function DataTable<T extends { id: string | number }>({
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(page * pageSize, total);
   const pages = buildPageRange(page, totalPages);
+  const { data: session } = useSession();
+  const route = useRouter();
+  const hasLogin = session?.user;
+  const handleEdit = (id: string | null) => {
+    route.push(`/admin/seatSelection/${id}`);
+  };
 
+  const handleDelete = (id: string | null) => {
+    console.log("delete", id);
+  };
   return (
     <div className="flex flex-col gap-3 ">
       {/* Table */}
-      <div className="overflow-x-auto bg-neutral rounded-lg relative">
+      <div className="overflow-x-auto bg- rounded-lg relative">
         {loading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral/60 rounded-lg">
             <span className="loading loading-ring loading-md" />
@@ -85,11 +97,23 @@ export default function DataTable<T extends { id: string | number }>({
         <table className="table w-full">
           <thead>
             <tr>
-              {headers.map((h) => (
-                <th key={h.key} style={{ width: h.width }}>
-                  {h.label}
+              {headers
+                .filter((h) => h.key !== "action")
+                .map((h) => (
+                  <th key={h.key} style={{ width: h.width }}>
+                    {h.label}
+                  </th>
+                ))}
+              {hasLogin && (
+                <th
+                  style={{
+                    width:
+                      headers.find((h) => h.key === "action")?.width ?? "200px",
+                  }}
+                >
+                  Action
                 </th>
-              ))}
+              )}
             </tr>
           </thead>
 
@@ -97,7 +121,7 @@ export default function DataTable<T extends { id: string | number }>({
             {data.length === 0 && !loading ? (
               <tr>
                 <td
-                  colSpan={headers.length}
+                  colSpan={headers.length + 1}
                   className="text-center text-white py-6"
                 >
                   No data
@@ -113,6 +137,16 @@ export default function DataTable<T extends { id: string | number }>({
                         : String(getNestedValue(row, col.key) ?? "-")}
                     </td>
                   ))}
+
+                  {/* Action Column */}
+                  {hasLogin && (
+                    <td>
+                      <ActionButtons
+                        onEdit={() => handleEdit(String(row.id))}
+                        onDelete={() => handleDelete(String(row.id))}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))
             )}

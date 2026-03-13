@@ -14,6 +14,7 @@ const headers = [
   // { key: "phone", label: "Phone" },
   // { key: "email", label: "Email" },
   { key: "event.name", width: "200px", label: "Event" },
+  // { key: "action", width: "200px", label: "Action" },
 ];
 
 export default function DataTableRegistration() {

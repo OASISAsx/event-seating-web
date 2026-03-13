@@ -2,14 +2,15 @@
 
 import React from "react";
 
-import type { EventInfo as EventInfoType } from "./types/seat.interface";
-import { generateSeats } from "./lib/generateSeats";
-import { useSeatSelection } from "./hooks/useSeatSelection";
-import { EventInfo } from "./components/EventInfo";
-import { SeatLegend } from "./components/SeatLegend";
-import { SeatMap } from "./components/SeatMap";
-import { BookingSummary } from "./components/BookingSummary";
-import { ConfirmModal } from "./components/ConfirmModal";
+import type { EventInfo as EventInfoType } from "../types/seat.interface";
+import { generateSeats } from "../lib/generateSeats";
+import { useSeatSelection } from "../hooks/useSeatSelection";
+import { EventInfo } from "../components/EventInfo";
+import { SeatLegend } from "../components/SeatLegend";
+import { SeatMap } from "../components/SeatMap";
+import { BookingSummary } from "../components/BookingSummary";
+import { ConfirmModal } from "../components/ConfirmModal";
+import { useRouter } from "next/dist/client/components/navigation";
 
 const EVENT: EventInfoType = {
   title: "Thailand Tech Summit 2025",
@@ -39,14 +40,17 @@ export default function SeatSelectionPage() {
     handleCloseModal,
     setIsConfirmed,
   } = useSeatSelection(initialSeats);
-
+  const route = useRouter();
   return (
     <div className="min-h-screen bg-base-100">
       {/* Top Nav */}
       <nav className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button className="btn btn-ghost btn-sm btn-circle">
+          <div className="flex items-center gap-3 text-black">
+            <button
+              className="btn btn-ghost btn-sm btn-circle"
+              onClick={() => route.push("/admin")}
+            >
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -62,10 +66,8 @@ export default function SeatSelectionPage() {
               </svg>
             </button>
             <div>
-              <p className="text-xs text-base-content/40 font-medium">
-                กลับไปยัง
-              </p>
-              <p className="text-sm font-bold text-base-content leading-tight">
+              <p className="text-xs text-gray-500 font-medium">กลับไปยัง</p>
+              <p className="text-sm font-bold text-gray-500 leading-tight">
                 รายละเอียดงาน
               </p>
             </div>
@@ -121,7 +123,7 @@ export default function SeatSelectionPage() {
               label: "ที่นั่งทั้งหมด",
               value: EVENT.totalSeats,
               icon: "🪑",
-              color: "text-base-content",
+              color: "text--base-100",
             },
             {
               label: "ว่างอยู่",
@@ -138,13 +140,11 @@ export default function SeatSelectionPage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="card bg-base-200/60 border border-base-300/40 rounded-2xl p-3 text-center"
+              className="card bg-neutral-content  border-base-300/40 rounded-2xl p-3 text-center"
             >
               <span className="text-lg">{stat.icon}</span>
               <p className={`text-xl font-black ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-base-content/40 font-medium">
-                {stat.label}
-              </p>
+              <p className="text-xs text-neutral font-medium">{stat.label}</p>
             </div>
           ))}
         </div>
