@@ -32,6 +32,11 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
     get().fetchRegistration();
   },
 
+  setSearch: (search: string) => {
+    set({ search, page: 1 });
+    get().fetchRegistration();
+  },
+
   reset: () =>
     set({ ...DEFAULT_PAGINATION, registration: [], total: 0, error: "" }),
 

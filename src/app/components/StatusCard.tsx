@@ -1,16 +1,23 @@
 type StatusCardProps = {
   title: string;
   seat: number;
-  status: "available" | "full";
+  status: "PENDING" | "CONFIRMED";
+  onClick?: () => void;
 };
 
-export default function StatusCard({ title, seat, status }: StatusCardProps) {
-  const isAvailable = status === "available";
+export default function StatusCard({
+  title,
+  seat,
+  status,
+  onClick,
+}: StatusCardProps) {
+  const isAvailable = status === "PENDING";
 
   return (
     <div
-      className={`card text-white shadow-md border ${
-        isAvailable ? "border-success" : "border-error"
+      onClick={onClick}
+      className={`card cursor-pointer text-black shadow-md border bg-base-100 ${
+        isAvailable ? "border-warning" : "border-success"
       }`}
     >
       <div className="card-body p-4">
@@ -18,9 +25,9 @@ export default function StatusCard({ title, seat, status }: StatusCardProps) {
           <h2 className="card-title text-base">{title}</h2>
 
           <div
-            className={`badge ${isAvailable ? "badge-success" : "badge-error"}`}
+            className={`badge ${isAvailable ? "badge-warning" : "badge-success"}`}
           >
-            {isAvailable ? "Available" : "Full"}
+            {status}
           </div>
         </div>
 

@@ -25,7 +25,7 @@ export interface useRegistrationStore extends PaginationParams {
   setPageSize: (size: number) => void;
   reset: () => void;
   // setSort: (key: string) => void;
-  // setSearch: (search: string) => void;
+  setSearch: (search: string) => void;
   // reset: () => void;
   _getParams: () => URLSearchParams;
 }

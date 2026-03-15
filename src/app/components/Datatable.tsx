@@ -16,6 +16,7 @@ export type ColumnDef<T> = {
   key: string;
   label: string;
   width: string;
+  color?: string;
   render?: (row: T) => React.ReactNode;
 };
 
@@ -100,7 +101,7 @@ export default function DataTable<T extends { id: string | number }>({
               {headers
                 .filter((h) => h.key !== "action")
                 .map((h) => (
-                  <th key={h.key} style={{ width: h.width }}>
+                  <th key={h.key} style={{ width: h.width, color: h.color }}>
                     {h.label}
                   </th>
                 ))}
@@ -109,6 +110,7 @@ export default function DataTable<T extends { id: string | number }>({
                   style={{
                     width:
                       headers.find((h) => h.key === "action")?.width ?? "200px",
+                    color: "black",
                   }}
                 >
                   Action
@@ -120,16 +122,13 @@ export default function DataTable<T extends { id: string | number }>({
           <tbody>
             {data.length === 0 && !loading ? (
               <tr>
-                <td
-                  colSpan={headers.length + 1}
-                  className="text-center text-white py-6"
-                >
+                <td colSpan={headers.length + 1} className="text-center  py-6">
                   No data
                 </td>
               </tr>
             ) : (
               data.map((row) => (
-                <tr key={row.id} className="hover:bg-base-300 text-white">
+                <tr key={row.id} className="hover:bg-base-300 ">
                   {headers.map((col) => (
                     <td key={col.key}>
                       {col.render
@@ -158,7 +157,7 @@ export default function DataTable<T extends { id: string | number }>({
       {/* Pagination */}
       <div className="flex items-center justify-between px-1">
         {/* Info + page size */}
-        <div className="flex items-center gap-2 text-sm text-gray-400">
+        <div className="flex items-center gap-2 text-sm ">
           <div className="">
             <p>
               {from}–{to} of {total} items
@@ -166,7 +165,7 @@ export default function DataTable<T extends { id: string | number }>({
           </div>
         </div>
         <div>
-          <div className="flex items-center gap-2 text-sm text-gray-400">
+          <div className="flex items-center gap-2 text-sm ">
             <select
               className="select select-bordered select-sm  w-30"
               value={pageSize}
@@ -209,7 +208,7 @@ export default function DataTable<T extends { id: string | number }>({
             ) : (
               <button
                 key={p}
-                className={`join-item rounded-sm btn text-white btn-sm ${page === p ? "btn-primary" : "btn-ghost"}`}
+                className={`join-item rounded-sm btn btn-sm ${page === p ? "btn-primary" : "btn-ghost"}`}
                 onClick={() => onPageChange(p)}
               >
                 {p}
