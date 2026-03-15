@@ -1,0 +1,31 @@
+name: CI/CD NextJS
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # SSH deploy
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+
+          script: |
+            cd /var/www/event-seating-web
+
+            git pull origin dev
+
+            docker compose down
+            docker compose up -d --build

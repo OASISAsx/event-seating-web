@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  event-seating-web:
+    container_name: event-seating-web
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: always
