@@ -157,8 +157,8 @@ export default function DataTable<T extends { id: string | number }>({
       {/* Pagination */}
       <div className="flex items-center justify-between px-1">
         {/* Info + page size */}
-        <div className="flex items-center gap-2 text-sm ">
-          <div className="">
+        <div className="hidden sm:flex items-center gap-2 text-sm">
+          <div>
             <p>
               {from}–{to} of {total} items
             </p>
