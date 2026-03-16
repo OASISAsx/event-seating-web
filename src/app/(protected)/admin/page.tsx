@@ -11,7 +11,7 @@ export default function AdminHome() {
     <div className="justify-center items-center min-h-screen flex flex-col gap-10 ">
       <Navbar />
       <div className="bg-base-300 rounded-2xl">
-        <div className="p-10 rounded-sx grid grid-cols-1 md:grid-cols-2 gap-4 ">
+        <div className="p-10 rounded-sx grid grid-cols-1 md:grid-cols-3 gap-4 ">
           <StatusCard
             title="Pending"
             seat={mainStatus?.PENDING?.status || 0}
@@ -24,6 +24,13 @@ export default function AdminHome() {
             seat={mainStatus?.CONFIRMED?.status || 0}
             status="CONFIRMED"
             onClick={() => setStatus("CONFIRMED")}
+          />
+
+          <StatusCard
+            title="Canceled"
+            seat={mainStatus?.CANCELLED?.status || 0}
+            status="CANCELLED"
+            onClick={() => setStatus("CANCELLED")}
           />
         </div>
         <DataTableRegistration />

@@ -25,16 +25,13 @@ export const SeatMap: React.FC<SeatMapProps> = ({
         </p>
       </div>
 
-      {/* Seat Grid */}
       <div className="flex flex-col gap-2 w-full items-center">
         {seats.map((row, rowIndex) => (
           <div key={rowIndex} className="flex items-center gap-1">
-            {/* Row Label */}
             <span className="w-6 text-right text-xs font-bold text-base-content/30 mr-1 font-mono">
               {String.fromCharCode(65 + rowIndex)}
             </span>
 
-            {/* Seats */}
             <div className="flex gap-1.5">
               {row.map((seat) => (
                 <SeatItem

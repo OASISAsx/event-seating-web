@@ -62,6 +62,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
             className="input w-full"
             value={payload.firstName}
             onChange={handleChange}
+            required
             placeholder="Full Name"
           />
           <input
@@ -69,6 +70,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
             className="input w-full"
             value={payload.lastName}
             onChange={handleChange}
+            required
             placeholder="Last Name"
           />
           <input
@@ -77,6 +79,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
             type="phone"
             onChange={handleChange}
             placeholder="Phone"
+            required
             name="phone"
           />
           <input
@@ -85,6 +88,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
             type="phone"
             onChange={handleChange}
             placeholder="Email"
+            required
             name="email"
           />
         </div>

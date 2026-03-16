@@ -9,7 +9,7 @@ interface EventInfoProps {
 
 export const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-base-300 via-base-300 to-primary border border-base-300/50 p-5">
+    <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-base-300 via-base-300 to-primary border border-base-300/50 p-5">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/5 rounded-full translate-y-1/2 -translate-x-1/2" />

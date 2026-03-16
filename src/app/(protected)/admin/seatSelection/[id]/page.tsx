@@ -12,7 +12,7 @@ import { BookingSummary } from "../components/BookingSummary";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useRouter } from "next/dist/client/components/navigation";
 import { useParams } from "next/navigation";
-import { MoveLeft, MoveRight } from "lucide-react";
+import { MoveLeft } from "lucide-react";
 import { useEvent } from "@/store/event.store";
 import { useRegistration } from "@/store/registration.store";
 
@@ -62,8 +62,13 @@ export default function SeatSelectionPage() {
           year: "numeric",
         })
       : "",
-    time: "09:00 – 17:00 น.",
-    venue: "อาคาร IMPACT Arena ห้อง 1",
+    time: event?.endDate
+      ? new Date(event.endDate).toLocaleTimeString("th-TH", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "" + " น." || "",
+    venue: event?.location || "-",
     category: "Technology",
     totalSeats: event?.totalSeats || 0,
     availableSeats: event?.seatsPerRow || 0,
