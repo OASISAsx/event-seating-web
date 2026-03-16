@@ -77,8 +77,62 @@
 }
 
 :root {
-  --color-base-100: #ffffff;
-  color: #08080f;
+  /* Glassmorphism Design - Dark Modern Theme */
+  --primary: #00d4ff;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #00d4ff;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #00d4ff;
+  --chart-2: #0099cc;
+  --chart-3: #0077aa;
+  --chart-4: #005588;
+  --chart-5: #003366;
+  --radius: 0.75rem;
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b / 0.8;
+  --card-foreground: #e2e8f0;
+  --popover: #1e293b;
+  --popover-foreground: #e2e8f0;
+  --secondary: #334155;
+  --secondary-foreground: #cbd5e1;
+  --muted: #475569;
+  --muted-foreground: #94a3b8;
+  --accent: #00d4ff;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+
+  --input: #1e293b;
+  --ring: #00d4ff;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-accent: #00d4ff;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #334155;
+  --sidebar-ring: #00d4ff;
+  /* daisyUI theme colors - OKLCH format */
+  --color-base-100: oklch(18% 0.03 280);
+  --color-base-200: oklch(22% 0.04 280);
+  --color-base-300: oklch(26% 0.05 280);
+  --color-base-content: oklch(96% 0.02 280);
+  --color-base-content-100: oklch(88% 0.1 280);
+  --color-primary: oklch(70% 0.28 285);
+  --color-primary-content: oklch(88% 0.1 280);
+  --color-secondary: oklch(50% 0.15 280);
+  --color-secondary-content: oklch(90% 0.05 280);
+  --color-accent: oklch(70% 0.28 285);
+  --color-accent-content: oklch(18% 0.03 280);
+  --color-neutral: oklch(30% 0.04 280);
+  --color-neutral-content: oklch(90% 0.05 280);
+  --color-info: oklch(65% 0.25 260);
+  --color-info-content: oklch(18% 0.03 280);
+  --color-success: oklch(68.043% 0.17678 149.216);
+  --color-success-content: oklch(18% 0.03 280);
+  --color-warning: oklch(82.64% 0.14445 110.075);
+  --color-warning-content: oklch(18% 0.03 280);
+  --color-error: oklch(60% 0.25 20);
+  --color-error-content: oklch(96% 0.02 280);
 }
 
 /* 

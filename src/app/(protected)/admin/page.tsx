@@ -2,26 +2,28 @@
 import { useRegistration } from "@/store/registration.store";
 import StatusCard from "../../components/StatusCard";
 import DataTableRegistration from "./tableRegistruction";
+import Navbar from "../../components/NavBar";
 
 export default function AdminHome() {
-  const { setSearch } = useRegistration();
-
+  const { setStatus, mainStatus } = useRegistration();
+  console.log("🚀 ~ file: page.tsx:8 ~ AdminHome ~ mainStatus:", mainStatus);
   return (
     <div className="justify-center items-center min-h-screen flex flex-col gap-10 ">
-      <div>
+      <Navbar />
+      <div className="bg-base-300 rounded-2xl">
         <div className="p-10 rounded-sx grid grid-cols-1 md:grid-cols-2 gap-4 ">
           <StatusCard
             title="Pending"
-            seat={20}
+            seat={mainStatus?.PENDING?.status || 0}
             status="PENDING"
-            onClick={() => setSearch("PENDING")}
+            onClick={() => setStatus("PENDING")}
           />
 
           <StatusCard
-            title="Confirmed"
-            seat={10}
+            title="Approved"
+            seat={mainStatus?.CONFIRMED?.status || 0}
             status="CONFIRMED"
-            onClick={() => setSearch("CONFIRMED")}
+            onClick={() => setStatus("CONFIRMED")}
           />
         </div>
         <DataTableRegistration />

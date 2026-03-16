@@ -11,9 +11,32 @@ const headers = [
     key: "firstName",
     width: "200px",
     label: "Name",
-    color: "black",
+    color: "white",
   },
-  { key: "event.name", width: "200px", label: "Event", color: "black" },
+  {
+    key: "lastName",
+    width: "200px",
+    label: "Name",
+    color: "white",
+  },
+  {
+    key: "status",
+    width: "150px",
+    label: "Status",
+    color: "white",
+    render: (row: Registration) => {
+      const status = row?.status || "PENDING";
+      const color = status === "CONFIRMED" ? "green" : "yellow";
+      return (
+        <span
+          className={`badge badge-warning badge-sm text-black bg-${color}-500 border-none`}
+        >
+          {status}
+        </span>
+      );
+    },
+  },
+  { key: "event.name", width: "200px", label: "Event", color: "white" },
 ];
 
 export default function DataTableRegistration() {
@@ -36,7 +59,7 @@ export default function DataTableRegistration() {
   }, [fetchRegistration, pathname, page, pageSize, search]);
 
   return (
-    <div className="p-6 bg-primary-content rounded-2xl w-full">
+    <div className="p-6 bg-base-300 rounded-2xl text-amber-50 w-full">
       <DataTable<Registration>
         headers={headers}
         data={registration}

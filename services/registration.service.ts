@@ -11,6 +11,19 @@ export const getRegistrations = async (params: URLSearchParams) => {
   }
 };
 
+export const getRegistrationsByEvent = async (eventId: string) => {
+  try {
+    const response = await api.get(`/registration/${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching registrations for event ID ${eventId}:`,
+      error,
+    );
+    throw error;
+  }
+};
+
 export const createRegistrationSeat = async (payload: CreateRegistration) => {
   try {
     const response = await api.post("/registration", {

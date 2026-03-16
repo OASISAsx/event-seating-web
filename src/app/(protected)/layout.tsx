@@ -1,4 +1,6 @@
 import { Toaster } from "react-hot-toast";
+import Navbar from "../components/NavBar";
+import { useSession } from "next-auth/react";
 
 export default function ProtectedLayout({
   children,
@@ -8,6 +10,7 @@ export default function ProtectedLayout({
   return (
     <>
       <Toaster position="top-right" />
+
       {children}
     </>
   );

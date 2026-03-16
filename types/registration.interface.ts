@@ -8,6 +8,7 @@ export interface Registration {
   lastName: string;
   phone: string;
   email: string;
+  status: string;
   eventId: string;
   event: Events;
   seatId: string;
@@ -16,16 +17,20 @@ export interface Registration {
 
 export interface useRegistrationStore extends PaginationParams {
   registration: Registration[];
+  registrationByEvent: Registration | null;
   loading: boolean;
   total: number;
   error: string;
+  mainStatus: { [key: string]: { status: number } };
   fetchRegistration: () => Promise<void>;
+  fetchRegistrationByEvent: (eventId: string) => Promise<void>;
   createRegistration: (payload: CreateRegistration) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   reset: () => void;
   // setSort: (key: string) => void;
   setSearch: (search: string) => void;
+  setStatus: (status: string) => void;
   // reset: () => void;
   _getParams: () => URLSearchParams;
 }

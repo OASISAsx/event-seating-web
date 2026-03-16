@@ -1,6 +1,7 @@
 import {
   createRegistrationSeat,
   getRegistrations,
+  getRegistrationsByEvent,
 } from "@/services/registration.service";
 import { Toast } from "@/src/lib/toast";
 import { PaginationParams } from "@/types/paginationParams";
@@ -10,14 +11,17 @@ const DEFAULT_PAGINATION: PaginationParams = {
   page: 1,
   pageSize: 10,
   search: "",
+  status: "",
 };
 
 export const useRegistration = create<useRegistrationStore>((set, get) => ({
   // State
   registration: [],
   total: 0,
+  registrationByEvent: null,
   loading: false,
   error: "",
+  mainStatus: {},
   ...DEFAULT_PAGINATION,
 
   // ── Pagination setters (แต่ละตัว reset page กลับ 1 เมื่อ filter เปลี่ยน) ──
@@ -37,17 +41,23 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
     get().fetchRegistration();
   },
 
+  setStatus: (status: string) => {
+    set({ status, page: 1 });
+    get().fetchRegistration();
+  },
+
   reset: () =>
     set({ ...DEFAULT_PAGINATION, registration: [], total: 0, error: "" }),
 
   _getParams: () => {
-    const { page, pageSize, search } = get();
+    const { page, pageSize, search, status } = get();
     const params = new URLSearchParams({
       page: String(page),
       limit: String(pageSize),
     });
 
     if (search) params.set("search", search);
+    if (status) params.set("status", status);
     return params;
   },
 
@@ -61,6 +71,7 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
       set({
         registration: res.data,
         total: res.meta.total,
+        mainStatus: res.status || {},
         loading: false,
       });
     } catch (err) {
@@ -73,6 +84,25 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
     }
   },
 
+  fetchRegistrationByEvent: async (id: string) => {
+    try {
+      set({ loading: true, error: "" });
+
+      const res = await getRegistrationsByEvent(id);
+
+      console.log("API:", res.data);
+
+      set({
+        registrationByEvent: res.data,
+        loading: false,
+      });
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Something went wrong",
+        loading: false,
+      });
+    }
+  },
   createRegistration: async (payload) => {
     try {
       set({ loading: true });

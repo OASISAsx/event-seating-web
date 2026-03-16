@@ -19,5 +19,7 @@ export interface Events {
 export interface UseEventsStore {
   loading: boolean;
   events: Events[];
+  event: Events | null;
   fetchEvent: () => Promise<void>;
+  getEventById: (id: string) => Promise<void>;
 }

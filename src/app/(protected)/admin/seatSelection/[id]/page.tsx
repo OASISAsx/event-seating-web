@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import type { EventInfo as EventInfoType } from "../types/seat.interface";
 import { generateSeats } from "../lib/generateSeats";
@@ -11,17 +11,10 @@ import { SeatMap } from "../components/SeatMap";
 import { BookingSummary } from "../components/BookingSummary";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useRouter } from "next/dist/client/components/navigation";
-
-const EVENT: EventInfoType = {
-  title: "Thailand Tech Summit 2025",
-  organizer: "Digital Economy Promotion Agency",
-  date: "28 มิถุนายน 2568",
-  time: "09:00 – 17:00 น.",
-  venue: "อาคาร IMPACT Arena ห้อง 1",
-  category: "Technology",
-  totalSeats: 80,
-  availableSeats: 51,
-};
+import { useParams } from "next/navigation";
+import { MoveLeft, MoveRight } from "lucide-react";
+import { useEvent } from "@/store/event.store";
+import { useRegistration } from "@/store/registration.store";
 
 const initialSeats = generateSeats();
 
@@ -40,30 +33,52 @@ export default function SeatSelectionPage() {
     handleCloseModal,
     setIsConfirmed,
   } = useSeatSelection(initialSeats);
+  const { getEventById, event } = useEvent();
   const route = useRouter();
+  const { fetchRegistrationByEvent, registrationByEvent } = useRegistration();
+  const params = useParams();
+
+  useEffect(() => {
+    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    console.log("Event ID from params:", id);
+    if (id) {
+      fetchRegistrationByEvent(id);
+    }
+  }, [params.id, fetchRegistrationByEvent]);
+
+  useEffect(() => {
+    if (!registrationByEvent) return;
+
+    getEventById(registrationByEvent.eventId);
+  }, [registrationByEvent, getEventById]);
+
+  const EVENT: EventInfoType = {
+    title: event?.name || "-",
+    organizer: "Digital Economy Promotion Agency",
+    date: event?.endDate
+      ? new Date(event.endDate).toLocaleDateString("th-TH", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "",
+    time: "09:00 – 17:00 น.",
+    venue: "อาคาร IMPACT Arena ห้อง 1",
+    category: "Technology",
+    totalSeats: event?.totalSeats || 0,
+    availableSeats: event?.seatsPerRow || 0,
+  };
   return (
     <div className="min-h-screen bg-base-100">
       {/* Top Nav */}
       <nav className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3 text-black">
+          <div className="flex items-center gap-3 ">
             <button
               className="btn btn-ghost btn-sm btn-circle"
               onClick={() => route.push("/admin")}
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <MoveLeft />
             </button>
             <div>
               <p className="text-xs text-gray-500 font-medium">กลับไปยัง</p>

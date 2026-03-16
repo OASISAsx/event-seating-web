@@ -16,8 +16,8 @@ export default function StatusCard({
   return (
     <div
       onClick={onClick}
-      className={`card cursor-pointer text-black shadow-md border bg-base-100 ${
-        isAvailable ? "border-warning" : "border-success"
+      className={`card cursor-pointer text-black shadow-md border  ${
+        isAvailable ? "bg-warning" : "bg-success"
       }`}
     >
       <div className="card-body p-4">

@@ -43,14 +43,14 @@ export default function EventPage() {
             </figure>
 
             <div className="card-body">
-              <h2 className="card-title">{item.name}</h2>
+              <h2 className="card-title text-black">{item.name}</h2>
 
-              <p>{item.description}</p>
+              <p className="text-gray-600">{item.description}</p>
 
               <div className="card-actions justify-end">
                 <button
                   onClick={() => selectItem(item)}
-                  className="btn btn-primary rounded-3xl text-white"
+                  className="btn btn-primary rounded-3xl "
                 >
                   Select Event
                 </button>

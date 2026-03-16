@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import type { Seat } from "../types/seat.interface";
 
-const MAX_SEATS = 5;
+const MAX_SEATS = 1;
 
 export function useSeatSelection(initialSeats: Seat[][]) {
   const [seats] = useState<Seat[][]>(initialSeats);

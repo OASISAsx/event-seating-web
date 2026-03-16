@@ -88,9 +88,9 @@ export default function DataTable<T extends { id: string | number }>({
   return (
     <div className="flex flex-col gap-3 ">
       {/* Table */}
-      <div className="overflow-x-auto bg- rounded-lg relative">
+      <div className=" relative overflow-x-auto rounded-box border border-base-content/5">
         {loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral/60 rounded-lg">
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg">
             <span className="loading loading-ring loading-md" />
           </div>
         )}
@@ -110,7 +110,7 @@ export default function DataTable<T extends { id: string | number }>({
                   style={{
                     width:
                       headers.find((h) => h.key === "action")?.width ?? "200px",
-                    color: "black",
+                    color: "white",
                   }}
                 >
                   Action
@@ -128,7 +128,10 @@ export default function DataTable<T extends { id: string | number }>({
               </tr>
             ) : (
               data.map((row) => (
-                <tr key={row.id} className="hover:bg-base-300 ">
+                <tr
+                  key={row.id}
+                  className="hover:bg-base-100/50 cursor-pointer border-b border-gray-300"
+                >
                   {headers.map((col) => (
                     <td key={col.key}>
                       {col.render
@@ -151,7 +154,6 @@ export default function DataTable<T extends { id: string | number }>({
             )}
           </tbody>
         </table>
-        <div className="divider divider-start"></div>
       </div>
 
       {/* Pagination */}
@@ -165,7 +167,7 @@ export default function DataTable<T extends { id: string | number }>({
           </div>
         </div>
         <div>
-          <div className="flex items-center gap-2 text-sm text-neutral">
+          <div className="flex items-center gap-2 text-sm">
             <select
               className="select select-bordered select-sm w-30"
               value={pageSize}
