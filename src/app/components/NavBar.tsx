@@ -20,9 +20,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const handleLogout = async () => {
     await signOut({
-      redirect: true,
-      callbackUrl: "/login",
+      redirect: false,
     });
+
+    window.location.href = "/login";
   };
   return (
     <>
