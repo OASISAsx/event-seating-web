@@ -10,13 +10,13 @@ const headers = [
   {
     key: "firstName",
     width: "200px",
-    label: "Name",
+    label: "First Name",
     color: "white",
   },
   {
     key: "lastName",
     width: "200px",
-    label: "Name",
+    label: "Last Name",
     color: "white",
   },
   {

@@ -1,11 +1,11 @@
 import type { Seat } from "../types/seat.interface";
 
-const ROWS = 8;
+const ROWS = 10;
 const COLS = 10;
-const VIP_ROWS = [0, 1]; // แถว A, B = VIP
+// const VIP_ROWS = [0, 1];
 // const OCCUPIED_PROBABILITY = 0.3;
 
-const VIP_PRICE = 2500;
+// const VIP_PRICE = 2500;
 const REGULAR_PRICE = 1200;
 
 // Pre-defined occupied seats for consistency
@@ -48,7 +48,7 @@ export function generateSeats(): Seat[][] {
     for (let col = 0; col < COLS; col++) {
       const colNum = col + 1;
       const label = `${rowLetter}${colNum}`;
-      const isVip = VIP_ROWS.includes(row);
+      // const isVip = VIP_ROWS.includes(row);
       const isOccupied = OCCUPIED_SEATS.has(label);
 
       rowSeats.push({
@@ -57,8 +57,8 @@ export function generateSeats(): Seat[][] {
         row,
         col,
         status: isOccupied ? "occupied" : "available",
-        type: isVip ? "vip" : "regular",
-        price: isVip ? VIP_PRICE : REGULAR_PRICE,
+        type: "regular",
+        price: REGULAR_PRICE,
       });
     }
 

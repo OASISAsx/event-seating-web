@@ -143,7 +143,7 @@ export default function SeatSelectionPage() {
               label: "ที่นั่งทั้งหมด",
               value: EVENT.totalSeats,
               icon: "🪑",
-              color: "text--base-100",
+              color: "text-base-100",
             },
             {
               label: "ว่างอยู่",
@@ -160,11 +160,13 @@ export default function SeatSelectionPage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="card bg-neutral-content  border-base-300/40 rounded-2xl p-3 text-center"
+              className="card bg-base-300  border-base-300/40 rounded-2xl p-3 text-center"
             >
               <span className="text-lg">{stat.icon}</span>
               <p className={`text-xl font-black ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-neutral font-medium">{stat.label}</p>
+              <p className="text-xs text-base-conten font-medium">
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
@@ -215,7 +217,7 @@ export default function SeatSelectionPage() {
       />
 
       {/* Mobile Sticky Footer */}
-      {selectedSeats.length > 0 && (
+      {/* {selectedSeats.length > 0 && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-100/90 backdrop-blur-xl border-t border-base-300/50 p-4 flex items-center gap-3">
           <div className="flex-1">
             <p className="text-xs text-base-content/50">
@@ -232,7 +234,7 @@ export default function SeatSelectionPage() {
             ยืนยันการจอง
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

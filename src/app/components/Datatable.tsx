@@ -169,7 +169,7 @@ export default function DataTable<T extends { id: string | number }>({
         <div>
           <div className="flex items-center gap-2 text-sm">
             <select
-              className="select select-bordered select-sm w-30"
+              className="select select-bordered select-sm w-30 bg-base-300"
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
             >

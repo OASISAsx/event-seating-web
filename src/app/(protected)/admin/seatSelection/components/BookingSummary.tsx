@@ -78,7 +78,7 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({
             <p className="text-sm text-center">เลือกที่นั่งที่ต้องการ</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 px-1">
             {selectedSeatDetails.map(
               (seat) =>
                 seat && (

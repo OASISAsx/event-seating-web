@@ -11,14 +11,14 @@ interface SeatItemProps {
 
 const seatStyles = {
   available:
-    "bg-base-200 border-base-300 hover:bg-primary/20 hover:border-primary hover:scale-110 cursor-pointer text-base-content/50 hover:text-primary transition-all duration-200",
+    "bg-primary border-base-300 hover:bg-primary/20 hover:border-primary hover:scale-110 cursor-pointer text-base-content/50 hover:text-primary transition-all duration-200",
   selected:
-    "bg-primary border-primary shadow-lg shadow-primary/40 scale-110 cursor-pointer text-primary-content seat-pulse",
+    "bg-base-300 border-primary shadow-lg shadow-primary/40 scale-110 cursor-pointer text-primary-content seat-pulse",
   occupied:
-    "bg-base-300/40 border-base-300/30 cursor-not-allowed text-base-content/20",
-  vip: "bg-warning/20 border-warning hover:bg-warning/40 hover:scale-110 cursor-pointer text-warning hover:shadow-warning/30 hover:shadow-md transition-all duration-200",
-  vipSelected:
-    "bg-warning border-warning shadow-lg shadow-warning/40 scale-110 cursor-pointer text-warning-content seat-pulse",
+    "bg-base-300/40 border-base-300/30 cursor-not-allowed text-base-content/20 ",
+  // vip: "bg-warning/20 border-warning hover:bg-warning/40 hover:scale-110 cursor-pointer text-warning hover:shadow-warning/30 hover:shadow-md transition-all duration-200",
+  // vipSelected:
+  //   "bg-warning border-warning shadow-lg shadow-warning/40 scale-110 cursor-pointer text-warning-content seat-pulse",
 };
 
 export const SeatItem: React.FC<SeatItemProps> = ({
@@ -28,9 +28,9 @@ export const SeatItem: React.FC<SeatItemProps> = ({
 }) => {
   const getStyle = () => {
     if (seat.status === "occupied") return seatStyles.occupied;
-    if (seat.type === "vip") {
-      return isSelected ? seatStyles.vipSelected : seatStyles.vip;
-    }
+    // if (seat.type === "vip") {
+    //   return isSelected ? seatStyles.vipSelected : seatStyles.vip;
+    // }
     return isSelected ? seatStyles.selected : seatStyles.available;
   };
 
@@ -50,7 +50,11 @@ export const SeatItem: React.FC<SeatItemProps> = ({
 
       {seat.status === "occupied" ? (
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clipRule="evenodd"
+          />
         </svg>
       ) : isSelected ? (
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -60,8 +64,8 @@ export const SeatItem: React.FC<SeatItemProps> = ({
             clipRule="evenodd"
           />
         </svg>
-      ) : seat.type === "vip" ? (
-        <span className="text-[8px] font-black">V</span>
+      ) : seat.status === "available" ? (
+        seat.label
       ) : null}
     </button>
   );
