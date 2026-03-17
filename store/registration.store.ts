@@ -5,7 +5,10 @@ import {
 } from "@/services/registration.service";
 import { Toast } from "@/src/lib/toast";
 import { PaginationParams } from "@/types/paginationParams";
-import { useRegistrationStore } from "@/types/registration.interface";
+import {
+  Registration,
+  useRegistrationStore,
+} from "@/types/registration.interface";
 import { create } from "zustand";
 const DEFAULT_PAGINATION: PaginationParams = {
   page: 1,
@@ -22,6 +25,7 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
   loading: false,
   error: "",
   mainStatus: {},
+  requestId: null,
   ...DEFAULT_PAGINATION,
 
   // ── Pagination setters (แต่ละตัว reset page กลับ 1 เมื่อ filter เปลี่ยน) ──
@@ -64,22 +68,30 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
   fetchRegistration: async () => {
-    set({ loading: true, error: "" });
+    const currentRequestId = Date.now(); // 🔥 กัน race condition
+    set({ loading: true, error: "", requestId: currentRequestId });
+
     try {
       const params = get()._getParams();
       const res = await getRegistrations(params);
+
+      // ❗ ถ้ามี request ใหม่มาแล้ว → ignore อันเก่า
+      if (get().requestId !== currentRequestId) return;
+
       set({
         registration: res.data,
         total: res.meta.total,
         mainStatus: res.status || {},
-        loading: false,
       });
     } catch (err) {
-      if (err) {
-        set({
-          error: err instanceof Error ? err.message : "Something went wrong",
-          loading: false,
-        });
+      if (get().requestId !== currentRequestId) return;
+
+      set({
+        error: err instanceof Error ? err.message : "Something went wrong",
+      });
+    } finally {
+      if (get().requestId === currentRequestId) {
+        set({ loading: false });
       }
     }
   },
@@ -103,28 +115,47 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
       });
     }
   },
+
+  addRegistration: (item: Registration) => {
+    set((state) => {
+      const exists = state.registration.some((i) => i.id === item.id);
+      if (exists) return state;
+
+      if (state.page !== 1) return state;
+
+      return {
+        registration: [item, ...state.registration],
+        total: state.total + 1,
+      };
+    });
+  },
+
   createRegistration: async (payload) => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: "" });
 
       const res = await createRegistrationSeat(payload);
 
-      set({ registration: res.data });
-      console.log(res.success, "success");
-      if (res.success) {
-        Toast.success("ลงทะเบียนสำเร็จ");
+      if (!res.success) {
+        throw new Error("Create registration failed");
       }
-      await get().fetchRegistration();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const message = err.response?.data?.message || "เกิดข้อผิดพลาด";
 
-      Toast.error(message);
+      const newItem = res.data;
 
+      // 🔥 ใช้ function กลาง (DRY)
+      get().addRegistration(newItem);
+
+      Toast.success("ลงทะเบียนสำเร็จ");
+
+      return newItem;
+    } catch (err) {
       set({
+        error: err instanceof Error ? err.message : "Something went wrong",
         loading: false,
-        error: message,
       });
+      Toast.error(get().error || "Something went wrong");
+
+      throw err;
     } finally {
       set({ loading: false });
     }

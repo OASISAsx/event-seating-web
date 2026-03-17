@@ -21,8 +21,10 @@ export interface useRegistrationStore extends PaginationParams {
   loading: boolean;
   total: number;
   error: string;
+  requestId: number | null;
   mainStatus: { [key: string]: { status: number } };
   fetchRegistration: () => Promise<void>;
+  addRegistration: (item: Registration) => void;
   fetchRegistrationByEvent: (eventId: string) => Promise<void>;
   createRegistration: (payload: CreateRegistration) => Promise<void>;
   setPage: (page: number) => void;

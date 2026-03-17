@@ -5,6 +5,7 @@ import { Registration } from "@/types/registration.interface";
 import { useRegistration } from "@/store/registration.store";
 import DataTable from "../../components/Datatable";
 import { usePathname } from "next/navigation";
+import { useRegistrationSocket } from "../../components/hooks/useRegistrationSocket";
 const headers = [
   {
     key: "firstName",
@@ -29,7 +30,7 @@ export default function DataTableUser() {
   } = useRegistration();
 
   const pathname = usePathname();
-
+  useRegistrationSocket();
   useEffect(() => {
     fetchRegistration();
   }, [fetchRegistration, pathname]);
