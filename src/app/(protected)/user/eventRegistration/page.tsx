@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import DialogCreate from "./dialogCreate";
 import { Events } from "@/types/event.interface";
 import Skeleton from "@/src/app/components/Skeleton";
+import { MoveLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function EventPage() {
   const { events, fetchEvent, loading } = useEvent();
   const [isOpen, setIsOpen] = useState(false);
   const [itemSelect, setItemSelect] = useState<Events | null>(null);
-
+  const route = useRouter();
   useEffect(() => {
     fetchEvent();
   }, [fetchEvent]);
@@ -24,6 +26,10 @@ export default function EventPage() {
 
   return (
     <div className="p-4 font-bold">
+      <button className="btn btn-base-content btn-sm rounded-3xl">
+        <MoveLeft size={20} onClick={() => route.push("/")} />
+      </button>
+
       <div className="divider text-3xl font-bold tracking-wide text-primary">
         <h1 className="text-3xl font-semibold">
           <span className="badge badge-xl badge-neutral"> Event List</span>

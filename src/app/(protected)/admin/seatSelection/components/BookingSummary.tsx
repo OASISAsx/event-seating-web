@@ -33,7 +33,7 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({
   ).length;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full ">
       {/* Header */}
       <div className="mb-4">
         <h3 className="text-lg font-bold text-base-content">สรุปการจอง</h3>

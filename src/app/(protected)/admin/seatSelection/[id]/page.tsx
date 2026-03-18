@@ -12,7 +12,15 @@ import { BookingSummary } from "../components/BookingSummary";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useRouter } from "next/dist/client/components/navigation";
 import { useParams } from "next/navigation";
-import { MoveLeft } from "lucide-react";
+import {
+  Grip,
+  MoveLeft,
+  Square,
+  SquareCheckBig,
+  Table,
+  TableIcon,
+  Target,
+} from "lucide-react";
 import { useEvent } from "@/store/event.store";
 import { useRegistration } from "@/store/registration.store";
 
@@ -142,19 +150,19 @@ export default function SeatSelectionPage() {
             {
               label: "ที่นั่งทั้งหมด",
               value: EVENT.totalSeats,
-              icon: "🪑",
-              color: "text-base-100",
+              icon: <Grip />,
+              color: "text-primary",
             },
             {
               label: "ว่างอยู่",
               value: EVENT.availableSeats - selectedSeats.length,
-              icon: "✅",
-              color: "text-success",
+              icon: <SquareCheckBig />,
+              color: "text-primary",
             },
             {
               label: "ที่เลือก",
               value: selectedSeats.length,
-              icon: "🎯",
+              icon: <Target />,
               color: "text-primary",
             },
           ].map((stat) => (
@@ -162,7 +170,10 @@ export default function SeatSelectionPage() {
               key={stat.label}
               className="card bg-base-300  border-base-300/40 rounded-2xl p-3 text-center"
             >
-              <span className="text-lg">{stat.icon}</span>
+              <div className="flex items-center justify-center">
+                {stat.icon}
+              </div>
+              {/* <span className="text-lg">{stat.icon}</span> */}
               <p className={`text-xl font-black ${stat.color}`}>{stat.value}</p>
               <p className="text-xs text-base-conten font-medium">
                 {stat.label}
@@ -174,16 +185,17 @@ export default function SeatSelectionPage() {
         {/* Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
           {/* LEFT: Seat Map */}
-          <div className="card bg-base-200/40 border border-base-300/40 rounded-3xl p-5 overflow-x-auto">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h2 className="text-base font-black text-base-content">
+          <div className="card bg-base-300 border border-base-300/40 rounded-3xl p-5 overflow-x-auto">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-2">
+              <div className="space-y-1">
+                <h2 className="flex text-base font-black text-base-content">
                   แผนผังที่นั่ง
                 </h2>
                 <p className="text-xs text-base-content/40">
                   แถว A–B = VIP | แถว C–H = ทั่วไป
                 </p>
               </div>
+
               <SeatLegend />
             </div>
             <SeatMap
@@ -194,7 +206,7 @@ export default function SeatSelectionPage() {
           </div>
 
           {/* RIGHT: Summary */}
-          <div className="card bg-base-200/40 border border-base-300/40 rounded-3xl p-5 lg:h-fit lg:sticky lg:top-20">
+          <div className="card bg-base-300 border border-base-300/40 rounded-3xl p-5 lg:h-fit lg:sticky lg:top-20">
             <BookingSummary
               selectedSeats={selectedSeats}
               allSeats={seats}

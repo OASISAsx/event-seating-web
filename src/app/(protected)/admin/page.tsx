@@ -8,10 +8,10 @@ export default function AdminHome() {
   const { setStatus, mainStatus } = useRegistration();
   console.log("🚀 ~ file: page.tsx:8 ~ AdminHome ~ mainStatus:", mainStatus);
   return (
-    <div className="justify-center items-center min-h-screen flex flex-col gap-10 ">
+    <div className="justify-center items-stretch min-h-screen flex flex-col gap-10 px-3">
       <Navbar />
-      <div className="bg-base-300 rounded-2xl">
-        <div className="p-10 rounded-sx grid grid-cols-1 md:grid-cols-3 gap-4 ">
+      <div className="bg-base-300 rounded-2xl w-full lg:p-10">
+        <div className="p-10 grid grid-cols-1 md:grid-cols-3 gap-4">
           <StatusCard
             title="Pending"
             seat={mainStatus?.PENDING?.status || 0}

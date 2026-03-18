@@ -96,7 +96,7 @@ export default function DataTable<T extends { id: string | number }>({
           </div>
         )}
 
-        <table className="table w-full">
+        <table className="table w-full ">
           <thead>
             <tr>
               {headers
