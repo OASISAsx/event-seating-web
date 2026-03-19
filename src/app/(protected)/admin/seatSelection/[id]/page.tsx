@@ -84,12 +84,12 @@ export default function SeatSelectionPage() {
   return (
     <div className="min-h-screen bg-base-100">
       {/* Top Nav */}
-      <nav className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 px-4 py-3">
+      {/* <nav className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 ">
             <button
               className="btn btn-ghost btn-sm btn-circle"
-              onClick={() => route.push("/admin")}
+              onClick={() => route.push("/admin/userRegistration")}
             >
               <MoveLeft />
             </button>
@@ -107,7 +107,7 @@ export default function SeatSelectionPage() {
             </div>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">

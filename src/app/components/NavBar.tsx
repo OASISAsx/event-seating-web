@@ -9,8 +9,8 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "#" },
-  { label: "Features", href: "#features" },
+  { label: "Home", href: "/admin/userRegistration" },
+  { label: "Add Event", href: "/admin/addEvent" },
   { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
@@ -38,7 +38,7 @@ export default function Navbar() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <a
-                href="#"
+                href="/admin/userRegistration"
                 className="text-xl sm:text-2xl font-bold text-white hover:text-cyan-500 transition-colors duration-200"
               >
                 <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">

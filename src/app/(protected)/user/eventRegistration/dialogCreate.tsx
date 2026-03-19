@@ -52,7 +52,7 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
 
   return (
     <dialog className="modal modal-open ">
-      <div className="modal-box w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl  flex flex-col">
+      <div className="modal-box bg-neutral w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl  flex flex-col">
         <h3 className="font-bold text-lg">{fetchData?.name}</h3>
         <div className="divider divider-start"></div>
 

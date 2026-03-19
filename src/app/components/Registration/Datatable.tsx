@@ -9,7 +9,7 @@ import {
 import ActionButtons from "./ActionButtons";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useRegistrationSocket } from "./hooks/useRegistrationSocket";
+import { useRegistrationSocket } from "../hooks/useRegistrationSocket";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
