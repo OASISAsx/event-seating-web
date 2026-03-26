@@ -5,6 +5,7 @@ export interface Events {
   id: string;
   name: string;
   description: string;
+  imageEvent: string;
   location: string;
   startDate: string;
   endDate: string;
@@ -22,4 +23,20 @@ export interface UseEventsStore {
   event: Events | null;
   fetchEvent: () => Promise<void>;
   getEventById: (id: string) => Promise<void>;
+  createEvent: (payload: CreateEvent) => Promise<void>;
+}
+
+export interface CreateEvent {
+  name: string;
+  description: string;
+  imageEvent: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  seatsPerRow: number;
+  totalSeats: number;
+  isActive: boolean;
+  status: string;
+  registrations: Registration[];
+  seat: Seat[];
 }

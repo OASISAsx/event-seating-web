@@ -1,4 +1,8 @@
-import { EventService, getEventOne } from "@/services/event.service";
+import {
+  createEvent,
+  EventService,
+  getEventOne,
+} from "@/services/event.service";
 import { UseEventsStore } from "@/types/event.interface";
 import { create } from "zustand";
 
@@ -21,5 +25,15 @@ export const useEvent = create<UseEventsStore>((set) => ({
     set({ loading: true });
     const res = await getEventOne(id);
     set({ event: res.data, loading: false });
+  },
+
+  createEvent: async (payload) => {
+    set({ loading: true });
+    const res = await createEvent(payload);
+
+    set({
+      events: res.data,
+      loading: false,
+    });
   },
 }));

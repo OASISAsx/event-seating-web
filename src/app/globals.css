@@ -154,10 +154,11 @@ body {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-  }
 } */
 input {
-  border: 1px solid rgb(185, 185, 185);
+  /* border: 1px solid rgb(55, 55, 55); */
+  background: #f7f7f7;
+  color: black;
 }
 .ep-root {
   min-height: 100vh;

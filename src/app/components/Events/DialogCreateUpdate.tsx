@@ -1,6 +1,8 @@
 "use client";
 import { Events } from "@/types/event.interface";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ImageUpload from "../ImageUpload";
+import { useEvent } from "@/store/event.store";
 
 type Props = {
   dialog: boolean;
@@ -13,9 +15,31 @@ export default function DialogCreateUpdate({
   onClose,
   fetchData,
 }: Props) {
+  // const { createEvent } = useEvent();
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    imageEvent: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+    seatsPerRow: 0,
+    totalSeats: 0,
+  });
   const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    return console.log(form, "form");
+    // await createEvent();
+  };
 
-  // ✅ control open/close dialog ด้วย state
+  const handleChange = (name: string, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
     if (dialog) {
       dialogRef.current?.showModal();
@@ -46,42 +70,37 @@ export default function DialogCreateUpdate({
         </h3>
 
         {/* Content */}
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Event Name"
-            defaultValue={fetchData?.name}
-            className="input input-bordered w-full"
-          />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col gap-4">
+            <ImageUpload />
 
-          <textarea
-            placeholder="Description"
-            defaultValue={fetchData?.description}
-            className="textarea textarea-bordered w-full"
-          />
+            <input
+              type="text"
+              placeholder="Event Name"
+              value={form.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              className="input input-bordered w-full"
+            />
 
-          <input
-            type="date"
-            defaultValue={fetchData?.endDate}
-            className="input input-bordered w-full"
-          />
-        </div>
+            <textarea
+              placeholder="Description"
+              value={form.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              className="textarea textarea-bordered w-full bg-white text-black"
+            />
+          </div>
 
-        {/* Actions */}
-        <div className="modal-action mt-6">
-          <button className="btn" onClick={closeDialog}>
-            Cancel
-          </button>
-          <button className="btn btn-primary">
-            {fetchData ? "Update" : "Create"}
-          </button>
-        </div>
+          <div className="modal-action mt-6">
+            <button type="button" className="btn" onClick={closeDialog}>
+              Cancel
+            </button>
+
+            <button type="submit" className="btn btn-primary">
+              {fetchData ? "Update" : "Create"}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* click outside = close */}
-      <form method="dialog" className="modal-backdrop">
-        <button onClick={onClose}>close</button>
-      </form>
     </dialog>
   );
 }

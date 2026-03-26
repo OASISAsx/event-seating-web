@@ -52,8 +52,8 @@ export default function DialogCreate({ dialog, onClose, fetchData }: Props) {
 
   return (
     <dialog className="modal modal-open ">
-      <div className="modal-box bg-neutral w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl  flex flex-col">
-        <h3 className="font-bold text-lg">{fetchData?.name}</h3>
+      <div className="modal-box   w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl  flex flex-col">
+        <h3 className="font-bold text-lg ">{fetchData?.name}</h3>
         <div className="divider divider-start"></div>
 
         <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-x-4 gap-y-10">
