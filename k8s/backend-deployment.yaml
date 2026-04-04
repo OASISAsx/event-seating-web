@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: oasisforsaken/eventseat-frontend:latest # แก้เป็นชื่อ Image ของหน้าบ้านคุณ
+          image: oasisforsaken/eventseat-frontend:latest
           ports:
-            - containerPort: 80 # ปกติหน้าบ้าน (Nginx) จะรันที่ Port 80
+            - containerPort: 3000 # <--- ต้องเป็น 3000 ตามที่แอป Next.js รัน
           env:
-            - name: NEXT_PUBLIC_API_URL # ตัวแปรให้หน้าบ้านรู้ว่าจะเรียก Backend ที่ไหน
+            - name: NEXT_PUBLIC_API_URL
               value: "http://backend-service/api"
           resources:
             requests:
@@ -35,10 +35,11 @@ kind: Service
 metadata:
   name: frontend-service
 spec:
-  type: LoadBalancer # ใช้ LoadBalancer เพื่อให้ได้ IP มาเข้าผ่าน Browser
+  # เปลี่ยนเป็น ClusterIP ก็ได้ถ้าใช้ Ingress อยู่แล้ว แต่ LoadBalancer ก็ใช้ได้ครับ
+  type: LoadBalancer
   selector:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 80 # <--- ทางเข้าจาก Ingress (ต้องตรงกับที่เขียนใน ingress.yaml)
+      targetPort: 3000 # <--- ทางออกไปหา Pod (ต้องตรงกับ containerPort)
