@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: oasisforsaken/eventseat-frontend:latest # แก้เป็นชื่อ Image ของหน้าบ้านคุณ
+          ports:
+            - containerPort: 80 # ปกติหน้าบ้าน (Nginx) จะรันที่ Port 80
+          env:
+            - name: NEXT_PUBLIC_API_URL # ตัวแปรให้หน้าบ้านรู้ว่าจะเรียก Backend ที่ไหน
+              value: "http://backend-service/api"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: LoadBalancer # ใช้ LoadBalancer เพื่อให้ได้ IP มาเข้าผ่าน Browser
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

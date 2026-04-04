@@ -1,11 +1,23 @@
 version: "3.9"
 
 services:
-  event-seating-web:
-    container_name: event-seating-web
-    build: .
+  event-seat-web: # เปลี่ยนชื่อให้ตรงกับที่ใช้ใน Ingress/Service ของ K8s เพื่อความไม่งง
+    container_name: event-seat-web
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "80:80" # แนะนำให้เปลี่ยนเป็น 80 ถ้าใช้ Nginx รันหน้าบ้าน (เพื่อให้เหมือน K8s)
+    environment:
+      # ส่ง URL ของ Backend เข้าไป (ต้องเป็น Public URL เพราะ Browser เป็นคนเรียก)
+      - NEXT_PUBLIC_API_URL=https://api.event-seat.elitefund.fun/api
+      - NODE_ENV=production
     env_file:
       - .env
     restart: always
+    networks:
+      - event-network
+
+networks:
+  event-network:
+    driver: bridge

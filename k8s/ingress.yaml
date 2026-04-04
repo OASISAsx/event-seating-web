@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # หน้าบ้านปกติไม่ต้องใช้ rewrite-target เหมือน backend
+    # เพื่อให้เข้าถึงไฟล์ static (js/css) ได้ถูกต้อง
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - event-seat.elitefund.fun # Domain หลักของหน้าบ้าน
+      secretName: frontend-tls
+  rules:
+    - host: event-seat.elitefund.fun
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service # ชื่อ Service ของหน้าบ้าน
+                port:
+                  number: 80 # ปกติ Nginx/Frontend รันที่ Port 80
