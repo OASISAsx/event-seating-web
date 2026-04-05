@@ -20,6 +20,7 @@ const DEFAULT_PAGINATION: PaginationParams = {
 export const useRegistration = create<useRegistrationStore>((set, get) => ({
   // State
   registration: [],
+  registrationByEventId: null,
   total: 0,
   registrationByEvent: null,
   loading: false,
@@ -104,7 +105,7 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
       console.log("API:", res.data);
 
       set({
-        registrationByEvent: res.data,
+        registrationByEventId: res.data,
         loading: false,
       });
     } catch (err) {

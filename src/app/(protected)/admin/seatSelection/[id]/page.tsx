@@ -42,8 +42,8 @@ export default function SeatSelectionPage() {
     setIsConfirmed,
   } = useSeatSelection(initialSeats);
   const { getEventById, event } = useEvent();
-  const route = useRouter();
-  const { fetchRegistrationByEvent, registrationByEvent } = useRegistration();
+  // const route = useRouter();
+  const { fetchRegistrationByEvent, registrationByEventId } = useRegistration();
   const params = useParams();
 
   useEffect(() => {
@@ -55,10 +55,10 @@ export default function SeatSelectionPage() {
   }, [params.id, fetchRegistrationByEvent]);
 
   useEffect(() => {
-    if (!registrationByEvent) return;
+    if (!registrationByEventId) return;
 
-    getEventById(registrationByEvent.eventId);
-  }, [registrationByEvent, getEventById]);
+    getEventById(registrationByEventId.eventId);
+  }, [registrationByEventId, getEventById]);
 
   const EVENT: EventInfoType = {
     title: event?.name || "-",

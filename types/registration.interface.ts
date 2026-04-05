@@ -18,6 +18,7 @@ export interface Registration {
 export interface useRegistrationStore extends PaginationParams {
   registration: Registration[];
   registrationByEvent: Registration[] | null;
+  registrationByEventId: Registration | null;
   loading: boolean;
   total: number;
   error: string;
