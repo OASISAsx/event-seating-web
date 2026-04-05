@@ -1,31 +1,46 @@
-name: CI/CD NextJS
+name: CI/CD NextJS to Kubernetes
 
 on:
   push:
     branches:
-      - dev
+      - build # รันเมื่อมีการ push เข้า branch build
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # checkout code
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      # SSH deploy
-      - name: Deploy to server
+      # 1. Login Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 2. Build และ Push Image (ลบ docker compose down ออกแล้ว)
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t oasisforsaken/eventseat-frontend:latest .
+          docker push oasisforsaken/eventseat-frontend:latest
+
+      # 3. สั่ง Deploy ผ่าน SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-
           script: |
             cd /var/www/event-seating-web
+            # ดึงโค้ดจาก branch เดียวกับที่สั่งรัน CI/CD
+            git pull origin build 
 
-            git pull origin dev
+            # Apply ไฟล์ YAML (ตรวจสอบว่าไฟล์อยู่ในโฟลเดอร์ k8s จริงๆ)
+            kubectl apply -f k8s/frontend-deployment.yaml
+            kubectl apply -f k8s/ingress.yaml
 
-            docker compose down
-            docker compose up -d --build
+            # สั่งให้ K8s อัปเดต Pod เป็นตัวล่าสุดที่เพิ่ง Push ไป
+            kubectl rollout restart deployment/frontend

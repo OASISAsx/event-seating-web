@@ -17,6 +17,7 @@ spec:
       containers:
         - name: frontend
           image: oasisforsaken/eventseat-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000 # <--- ต้องเป็น 3000 ตามที่แอป Next.js รัน
           env:
