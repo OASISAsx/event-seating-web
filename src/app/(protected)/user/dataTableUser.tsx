@@ -4,8 +4,7 @@ import { useEffect } from "react";
 import { Registration } from "@/types/registration.interface";
 import { useRegistration } from "@/store/registration.store";
 import DataTable from "../../components/Registration/Datatable";
-import { usePathname } from "next/navigation";
-import { useRegistrationSocket } from "../../components/hooks/useRegistrationSocket";
+import { socket } from "@/src/lib/socket";
 const headers = [
   {
     key: "firstName",
@@ -29,11 +28,26 @@ export default function DataTableUser() {
     setPageSize,
   } = useRegistration();
 
-  const pathname = usePathname();
-  useRegistrationSocket();
+  const addRegistration = useRegistration((state) => state.addRegistration);
+
   useEffect(() => {
     fetchRegistration();
-  }, [fetchRegistration, pathname]);
+
+    socket.on("connect", () => {
+      console.log("Connected to WS Server with ID:", socket.id);
+    });
+
+    socket.on("registration_created", (data) => {
+      console.log("Got new data via Socket:", data);
+      addRegistration(data);
+    });
+
+    return () => {
+      socket.off("registration_created");
+      socket.disconnect();
+    };
+  }, [addRegistration, fetchRegistration]);
+
   return (
     <div className="p-6 bg-neutral">
       <DataTable<Registration>

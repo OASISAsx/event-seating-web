@@ -17,11 +17,12 @@ export interface Registration {
 
 export interface useRegistrationStore extends PaginationParams {
   registration: Registration[];
-  registrationByEvent: Registration | null;
+  registrationByEvent: Registration[] | null;
   loading: boolean;
   total: number;
   error: string;
   requestId: number | null;
+  currentEventId: string | number | null;
   mainStatus: { [key: string]: { status: number } };
   fetchRegistration: () => Promise<void>;
   addRegistration: (item: Registration) => void;

@@ -27,8 +27,7 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
   mainStatus: {},
   requestId: null,
   ...DEFAULT_PAGINATION,
-
-  // ── Pagination setters (แต่ละตัว reset page กลับ 1 เมื่อ filter เปลี่ยน) ──
+  currentEventId: null,
 
   setPage: (page) => {
     set({ page });
@@ -68,7 +67,7 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
   fetchRegistration: async () => {
-    const currentRequestId = Date.now(); // 🔥 กัน race condition
+    const currentRequestId = Date.now();
     set({ loading: true, error: "", requestId: currentRequestId });
 
     try {
@@ -118,15 +117,35 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
 
   addRegistration: (item: Registration) => {
     set((state) => {
-      const exists = state.registration.some((i) => i.id === item.id);
+      const exists = Array.isArray(state.registration)
+        ? state.registration.some((i) => i.id === item.id)
+        : false;
+
       if (exists) return state;
 
-      if (state.page !== 1) return state;
+      const newState: Partial<useRegistrationStore> = {};
 
-      return {
-        registration: [item, ...state.registration],
-        total: state.total + 1,
-      };
+      // 1. อัปเดตหน้า List รวม
+      if (state.page === 1) {
+        newState.registration = [item, ...state.registration];
+        newState.total = state.total + 1;
+      }
+
+      // 2. อัปเดตหน้าเฉพาะ Event (ป้องกันกรณี registrationByEvent เป็น null)
+      const isSameEvent =
+        state.currentEventId &&
+        String(item.eventId) === String(state.currentEventId);
+
+      if (isSameEvent && state.registrationByEvent) {
+        const existsInEvent = state.registrationByEvent.some(
+          (i) => i.id === item.id,
+        );
+        if (!existsInEvent) {
+          newState.registrationByEvent = [item, ...state.registrationByEvent];
+        }
+      }
+
+      return newState;
     });
   },
 
