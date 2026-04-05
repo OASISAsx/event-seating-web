@@ -9,7 +9,10 @@ services:
     ports:
       - "3000:80" # แก้จาก 80:80 เป็น 3000:80 (เข้าผ่าน localhost:3000)
     environment:
-      - NEXT_PUBLIC_API_URL=https://api.event-seat.elitefund.fun/api
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_API_URL_SOCKET=${NEXT_PUBLIC_API_URL_SOCKET}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NODE_ENV=production
     env_file:
       - .env

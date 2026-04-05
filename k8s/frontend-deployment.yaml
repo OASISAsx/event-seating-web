@@ -22,7 +22,7 @@ spec:
             - containerPort: 3000 # <--- ต้องเป็น 3000 ตามที่แอป Next.js รัน
           env:
             - name: NEXT_PUBLIC_API_URL
-              value: "http://backend-service/api"
+              value: "https://api.event-seat.elitefund.fun/api"
           resources:
             requests:
               cpu: "100m"
