@@ -29,8 +29,7 @@ export default function Navbar() {
     <>
       {/* Navbar Container */}
       <nav className="fixed top-0 left-0 right-0 z-50">
-        {/* Glassmorphic Background */}
-        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50" />
+        <div className="absolute inset-0 border-b border-white/8 bg-[#09131ddd] backdrop-blur-xl" />
 
         {/* Navbar Content */}
         <div className="relative mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -39,9 +38,9 @@ export default function Navbar() {
             <div className="flex-shrink-0">
               <a
                 href="/admin/userRegistration"
-                className="text-xl sm:text-2xl font-bold text-white hover:text-cyan-500 transition-colors duration-200"
+                className="text-xl sm:text-2xl font-bold text-white transition-colors duration-200 hover:text-primary"
               >
-                <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                   EVENT SEAT
                 </span>
               </a>
@@ -53,22 +52,20 @@ export default function Navbar() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="relative px-3 py-2 text-sm font-medium text-slate-300 transition-all duration-200 group"
+                  className="group relative rounded-full px-3 py-2 text-sm font-medium text-slate-300 transition-all duration-200 hover:bg-white/4"
                 >
-                  <span className="relative z-10 group-hover:text-cyan-500">
+                  <span className="relative z-10 group-hover:text-primary">
                     {item.label}
                   </span>
-                  {/* Animated underline */}
-                  <span className="absolute bottom-1 left-3 right-3 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                  <span className="absolute bottom-1 left-3 right-3 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-primary via-secondary to-accent transition-transform duration-200 group-hover:scale-x-100" />
                 </a>
               ))}
             </div>
 
-            {/* Desktop CTA Button */}
             <div className="hidden md:flex items-center space-x-4 ">
               <button
                 onClick={() => handleLogout()}
-                className="w-full px-4 flex py-2 text-sm cursor-pointer font-medium items-center text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-200"
+                className="flex w-full cursor-pointer items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:border-primary/40 hover:bg-primary/12 hover:text-primary"
               >
                 <LogOut />
               </button>
@@ -78,7 +75,7 @@ export default function Navbar() {
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-slate-300 hover:text-cyan-500 hover:bg-slate-800 transition-colors duration-200"
+                className="inline-flex items-center justify-center rounded-xl p-2 text-slate-300 transition-colors duration-200 hover:bg-white/6 hover:text-primary"
               >
                 {isOpen ? (
                   <X className="h-6 w-6" />
@@ -92,13 +89,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50 animate-in slide-in-from-top-2 duration-250">
+          <div className="animate-in slide-in-from-top-2 absolute left-0 right-0 top-full border-b border-white/8 bg-[#09131df2] backdrop-blur-xl duration-250 md:hidden">
             <div className="px-4 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-cyan-500 hover:bg-slate-800 transition-colors duration-200"
+                  className="block rounded-xl px-3 py-2 text-base font-medium text-slate-300 transition-colors duration-200 hover:bg-white/6 hover:text-primary"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
@@ -107,7 +104,7 @@ export default function Navbar() {
               <div>
                 <button
                   onClick={() => handleLogout()}
-                  className="w-30 px-4 flex py-2 text-sm cursor-pointer font-medium items-center text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-200"
+                  className="flex w-30 cursor-pointer items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:border-primary/40 hover:bg-primary/12 hover:text-primary"
                 >
                   <LogOut />
                 </button>

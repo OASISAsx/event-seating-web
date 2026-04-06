@@ -5,6 +5,7 @@ import ActionButtons from "./ActionButtons";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import DialogCreateUpdate from "./DialogCreateUpdate";
+import { Events } from "@/types/event.interface";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -40,17 +41,19 @@ function getNestedValue<T>(obj: T, key: string): unknown {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function DataTableEvent<T extends { id: string | number }>({
+export default function DataTableEvent<T extends Events>({
   headers,
   data,
   loading = false,
 }: DataTableProps<T>) {
   const { data: session } = useSession();
-  const route = useRouter();
+  const [itemEditing, setItemEditing] = useState<T | null>(null);
+  // const route = useRouter();
   const [dialog, setDialog] = useState(false);
   const hasLogin = session?.user;
-  const handleEdit = (id: string | null) => {
-    route.push(`/admin/seatSelection/${id}`);
+  const handleEdit = (row: T | null) => {
+    setDialog(true);
+    setItemEditing(row);
   };
 
   const handleDelete = (id: string | null) => {
@@ -141,7 +144,7 @@ export default function DataTableEvent<T extends { id: string | number }>({
                     {hasLogin && (
                       <td className="text-center">
                         <ActionButtons
-                          onEdit={() => handleEdit(String(row.id))}
+                          onEdit={() => handleEdit(row)}
                           onDelete={() => handleDelete(String(row.id))}
                         />
                       </td>
@@ -153,9 +156,10 @@ export default function DataTableEvent<T extends { id: string | number }>({
           </table>
         </div>
         <DialogCreateUpdate
+          key={`create-${dialog ? "open" : "closed"}`}
           dialog={dialog}
           onClose={() => setDialog(false)}
-          fetchData={null}
+          fetchData={itemEditing}
         />
       </div>
     </div>

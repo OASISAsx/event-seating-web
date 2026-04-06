@@ -27,6 +27,7 @@ export interface UseEventsStore {
 }
 
 export interface CreateEvent {
+  id?: string;
   name: string;
   description: string;
   imageEvent: string;
@@ -35,8 +36,4 @@ export interface CreateEvent {
   endDate: string;
   seatsPerRow: number;
   totalSeats: number;
-  isActive: boolean;
-  status: string;
-  registrations: Registration[];
-  seat: Seat[];
 }

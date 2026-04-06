@@ -41,7 +41,7 @@ export default function EventPage() {
           <div key={item.id} className="card bg-neutral-content shadow-sm">
             <figure className="relative h-88">
               <Image
-                src="/seat_event.png"
+                src={item.imageEvent}
                 alt="seat_event"
                 fill
                 className="object-cover"

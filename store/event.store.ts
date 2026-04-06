@@ -6,7 +6,7 @@ import {
 import { UseEventsStore } from "@/types/event.interface";
 import { create } from "zustand";
 
-export const useEvent = create<UseEventsStore>((set) => ({
+export const useEvent = create<UseEventsStore>((set, get) => ({
   events: [],
   event: null,
   loading: false,
@@ -29,11 +29,12 @@ export const useEvent = create<UseEventsStore>((set) => ({
 
   createEvent: async (payload) => {
     set({ loading: true });
-    const res = await createEvent(payload);
 
-    set({
-      events: res.data,
-      loading: false,
-    });
+    try {
+      await createEvent(payload);
+      await get().fetchEvent();
+    } finally {
+      set({ loading: false });
+    }
   },
 }));
