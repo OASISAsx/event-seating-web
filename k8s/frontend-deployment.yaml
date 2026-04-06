@@ -25,6 +25,13 @@ spec:
               value: "https://api.event-seat.elitefund.fun/api"
             - name: NEXT_PUBLIC_API_URL_SOCKET
               value: "https://api.event-seat.elitefund.fun"
+            - name: NEXTAUTH_URL
+              value: "https://event-seat.elitefund.fun"
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-secrets
+                  key: NEXTAUTH_SECRET
           resources:
             requests:
               cpu: "100m"
