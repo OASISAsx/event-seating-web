@@ -1,4 +1,3 @@
-# Stage 1: deps (ต้องมี AS deps เพื่อให้ Stage อื่นเรียกใช้ได้)
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -6,23 +5,26 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
-# Stage 2: builder
 FROM node:20-alpine AS builder
 WORKDIR /app
 RUN npm install -g pnpm
-
-# --- ส่วนสำคัญ: รับค่า URL มาฝังตอน Build ---
 ARG NEXT_PUBLIC_API_URL=https://api.event-seat.elitefund.fun/api
+ARG NEXT_PUBLIC_API_URL_SOCKET=https://api.event-seat.elitefund.fun
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-# ---------------------------------------
-
-# แก้ Error บรรทัดที่ 9: ดึงจาก Stage "deps" ด้านบน
+ENV NEXT_PUBLIC_API_URL_SOCKET=$NEXT_PUBLIC_API_URL_SOCKET
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-ENV NEXT_PRIVATE_STANDALONE=true 
+ENV NEXT_PRIVATE_STANDALONE=true
 RUN pnpm build
 
-# Stage 3: runner
 FROM node:20-alpine AS runner
-# ... (ก๊อปปี้ส่วนที่เหลือของคุณมาใส่ได้เลย)
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+USER nextjs
+EXPOSE 3000
+CMD ["node", "server.js"]

@@ -23,6 +23,8 @@ spec:
           env:
             - name: NEXT_PUBLIC_API_URL
               value: "https://api.event-seat.elitefund.fun/api"
+            - name: NEXT_PUBLIC_API_URL_SOCKET
+              value: "https://api.event-seat.elitefund.fun"
           resources:
             requests:
               cpu: "100m"
@@ -37,7 +39,7 @@ metadata:
   name: frontend-service
 spec:
   # เปลี่ยนเป็น ClusterIP ก็ได้ถ้าใช้ Ingress อยู่แล้ว แต่ LoadBalancer ก็ใช้ได้ครับ
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: frontend
   ports:
