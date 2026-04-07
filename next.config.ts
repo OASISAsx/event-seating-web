@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
       // สำหรับ Production ของคุณ
       {
         protocol: "https",
-        hostname: "api.event-seat.elitefund.fun",
+        hostname: "https://pub-30c63d14d2de4f4490a1b3a119597918.r2.dev",
         pathname: "/**",
       },
     ],
