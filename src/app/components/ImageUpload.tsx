@@ -36,6 +36,18 @@ export default function ImageUpload() {
     }, 200);
   };
 
+  const normalizePreviewUrl = (url: string) => {
+    if (url.startsWith("http//")) {
+      return url.replace("http//", "http://");
+    }
+
+    if (url.startsWith("https//")) {
+      return url.replace("https//", "https://");
+    }
+
+    return url;
+  };
+
   const addFiles = useCallback((files: FileList | File[]) => {
     const fileArray = Array.from(files).filter((f) =>
       f.type.startsWith("image/"),
