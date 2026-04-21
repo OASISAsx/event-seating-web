@@ -1,58 +1,66 @@
 "use client";
 
-import React, { useEffect } from "react";
-
-import type { EventInfo as EventInfoType } from "../types/seat.interface";
-import { generateSeats } from "../lib/generateSeats";
-import { useSeatSelection } from "../hooks/useSeatSelection";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
+import { Grip, SquareCheckBig, Target } from "lucide-react";
+import { useEvent } from "@/store/event.store";
+import { useRegistration } from "@/store/registration.store";
+import { BookingSummary } from "../components/BookingSummary";
+import { ConfirmModal } from "../components/ConfirmModal";
 import { EventInfo } from "../components/EventInfo";
 import { SeatLegend } from "../components/SeatLegend";
 import { SeatMap } from "../components/SeatMap";
-import { BookingSummary } from "../components/BookingSummary";
-import { ConfirmModal } from "../components/ConfirmModal";
-import { useRouter } from "next/dist/client/components/navigation";
-import { useParams } from "next/navigation";
-import {
-  Grip,
-  MoveLeft,
-  Square,
-  SquareCheckBig,
-  Table,
-  TableIcon,
-  Target,
-} from "lucide-react";
-import { useEvent } from "@/store/event.store";
-import { useRegistration } from "@/store/registration.store";
-
-const initialSeats = generateSeats();
+import { useSeatSelection } from "../hooks/useSeatSelection";
+import { mapApiSeatsToSeatGrid } from "../lib/mapApiSeats";
+import type { EventInfo as EventInfoType } from "../types/seat.interface";
 
 export default function SeatSelectionPage() {
+  const params = useParams();
+  const registrationId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const {
+    fetchRegistrationByEvent,
+    registrationByEventId,
+    updateRegistrationSeat,
+  } = useRegistration();
+  const { getEventById, event } = useEvent();
+  const seatGrid = useMemo(
+    () => mapApiSeatsToSeatGrid(event?.seats, registrationByEventId?.seatId),
+    [event?.seats, registrationByEventId?.seatId],
+  );
+  const initialSelectedSeats = useMemo(
+    () => (registrationByEventId?.seatId ? [registrationByEventId.seatId] : []),
+    [registrationByEventId?.seatId],
+  );
   const {
     seats,
     selectedSeats,
     isModalOpen,
     isConfirmed,
     maxSeats,
-    totalPrice,
     handleSeatClick,
     handleRemoveSeat,
     handleConfirmOpen,
     handleConfirmBooking,
     handleCloseModal,
     setIsConfirmed,
-  } = useSeatSelection(initialSeats);
-  const { getEventById, event } = useEvent();
-  // const route = useRouter();
-  const { fetchRegistrationByEvent, registrationByEventId } = useRegistration();
-  const params = useParams();
+  } = useSeatSelection(seatGrid, initialSelectedSeats);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const availableSeatsCount = useMemo(
+    () =>
+      seats
+        .flat()
+        .filter(
+          (seat) =>
+            seat.status === "available" && !selectedSeats.includes(seat.id),
+        ).length,
+    [seats, selectedSeats],
+  );
 
   useEffect(() => {
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    console.log("Event ID from params:", id);
-    if (id) {
-      fetchRegistrationByEvent(id);
+    if (registrationId) {
+      fetchRegistrationByEvent(registrationId);
     }
-  }, [params.id, fetchRegistrationByEvent]);
+  }, [fetchRegistrationByEvent, registrationId]);
 
   useEffect(() => {
     if (!registrationByEventId) return;
@@ -60,7 +68,25 @@ export default function SeatSelectionPage() {
     getEventById(registrationByEventId.eventId);
   }, [registrationByEventId, getEventById]);
 
-  const EVENT: EventInfoType = {
+  const onConfirmSeatUpdate = async () => {
+    const selectedSeatId = selectedSeats[0];
+
+    if (!registrationId || !selectedSeatId) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await updateRegistrationSeat(registrationId, { seatId: selectedSeatId });
+      await fetchRegistrationByEvent(registrationId);
+      handleConfirmBooking(selectedSeatId);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const eventInfo: EventInfoType = {
     title: event?.name || "-",
     organizer: "Digital Economy Promotion Agency",
     date: event?.endDate
@@ -78,40 +104,13 @@ export default function SeatSelectionPage() {
       : "" + " น." || "",
     venue: event?.location || "-",
     category: "Technology",
-    totalSeats: event?.totalSeats || 0,
-    availableSeats: event?.seatsPerRow || 0,
+    totalSeats: seats.flat().length || event?.totalSeats || 0,
+    availableSeats: availableSeatsCount,
   };
+
   return (
     <div className="min-h-screen bg-base-100">
-      {/* Top Nav */}
-      {/* <nav className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3 ">
-            <button
-              className="btn btn-ghost btn-sm btn-circle"
-              onClick={() => route.push("/admin/userRegistration")}
-            >
-              <MoveLeft />
-            </button>
-            <div>
-              <p className="text-xs text-gray-500 font-medium">กลับไปยัง</p>
-              <p className="text-sm font-bold text-gray-500 leading-tight">
-                รายละเอียดงาน
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="badge badge-primary badge-outline font-semibold">
-              ขั้นตอน 2/3
-            </div>
-          </div>
-        </div>
-      </nav> */}
-
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Success Toast */}
         {isConfirmed && (
           <div className="alert alert-success mb-4 rounded-2xl shadow-lg shadow-success/20 animate-in slide-in-from-top">
             <svg
@@ -128,7 +127,7 @@ export default function SeatSelectionPage() {
               />
             </svg>
             <span className="font-semibold">
-              จองที่นั่งสำเร็จ! กำลังนำไปสู่หน้าชำระเงิน...
+              อัปเดตที่นั่งสำหรับผู้ลงทะเบียนสำเร็จ
             </span>
             <button
               onClick={() => setIsConfirmed(false)}
@@ -139,23 +138,21 @@ export default function SeatSelectionPage() {
           </div>
         )}
 
-        {/* Event Info */}
         <div className="mb-6">
-          <EventInfo event={EVENT} />
+          <EventInfo event={eventInfo} />
         </div>
 
-        {/* Stats Bar */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           {[
             {
               label: "ที่นั่งทั้งหมด",
-              value: EVENT.totalSeats,
+              value: eventInfo.totalSeats,
               icon: <Grip />,
               color: "text-primary",
             },
             {
               label: "ว่างอยู่",
-              value: EVENT.availableSeats - selectedSeats.length,
+              value: eventInfo.availableSeats,
               icon: <SquareCheckBig />,
               color: "text-primary",
             },
@@ -168,12 +165,9 @@ export default function SeatSelectionPage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="card bg-base-300  border-base-300/40 rounded-2xl p-3 text-center"
+              className="card bg-base-300 border-base-300/40 rounded-2xl p-3 text-center"
             >
-              <div className="flex items-center justify-center">
-                {stat.icon}
-              </div>
-              {/* <span className="text-lg">{stat.icon}</span> */}
+              <div className="flex items-center justify-center">{stat.icon}</div>
               <p className={`text-xl font-black ${stat.color}`}>{stat.value}</p>
               <p className="text-xs text-base-conten font-medium">
                 {stat.label}
@@ -182,9 +176,7 @@ export default function SeatSelectionPage() {
           ))}
         </div>
 
-        {/* Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-          {/* LEFT: Seat Map */}
           <div className="card bg-base-300 border border-base-300/40 rounded-3xl p-5 overflow-x-auto">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-2">
               <div className="space-y-1">
@@ -192,20 +184,26 @@ export default function SeatSelectionPage() {
                   แผนผังที่นั่ง
                 </h2>
                 <p className="text-xs text-base-content/40">
-                  แถว A–B = VIP | แถว C–H = ทั่วไป
+                  เลือกที่นั่งใหม่เพื่ออัปเดตให้ผู้ลงทะเบียน
                 </p>
               </div>
 
               <SeatLegend />
             </div>
-            <SeatMap
-              seats={seats}
-              selectedSeats={selectedSeats}
-              onSeatClick={handleSeatClick}
-            />
+
+            {seats.length > 0 ? (
+              <SeatMap
+                seats={seats}
+                selectedSeats={selectedSeats}
+                onSeatClick={handleSeatClick}
+              />
+            ) : (
+              <div className="flex min-h-64 items-center justify-center text-sm text-base-content/50">
+                ไม่พบข้อมูลที่นั่งสำหรับอีเวนต์นี้
+              </div>
+            )}
           </div>
 
-          {/* RIGHT: Summary */}
           <div className="card bg-base-300 border border-base-300/40 rounded-3xl p-5 lg:h-fit lg:sticky lg:top-20">
             <BookingSummary
               selectedSeats={selectedSeats}
@@ -213,40 +211,20 @@ export default function SeatSelectionPage() {
               maxSeats={maxSeats}
               onRemoveSeat={handleRemoveSeat}
               onConfirm={handleConfirmOpen}
+              isSubmitting={isSubmitting}
             />
           </div>
         </div>
       </div>
 
-      {/* Confirm Modal */}
       <ConfirmModal
         isOpen={isModalOpen}
         selectedSeats={selectedSeats}
         allSeats={seats}
-        totalPrice={totalPrice}
-        onConfirm={handleConfirmBooking}
+        onConfirm={onConfirmSeatUpdate}
         onClose={handleCloseModal}
+        isSubmitting={isSubmitting}
       />
-
-      {/* Mobile Sticky Footer */}
-      {/* {selectedSeats.length > 0 && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-100/90 backdrop-blur-xl border-t border-base-300/50 p-4 flex items-center gap-3">
-          <div className="flex-1">
-            <p className="text-xs text-base-content/50">
-              {selectedSeats.length} ที่นั่ง
-            </p>
-            <p className="text-lg font-black text-primary">
-              ฿{totalPrice.toLocaleString()}
-            </p>
-          </div>
-          <button
-            onClick={handleConfirmOpen}
-            className="btn btn-primary rounded-2xl px-6 font-bold shadow-lg shadow-primary/30"
-          >
-            ยืนยันการจอง
-          </button>
-        </div>
-      )} */}
     </div>
   );
 }

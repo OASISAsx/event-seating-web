@@ -7,18 +7,18 @@ interface ConfirmModalProps {
   isOpen: boolean;
   selectedSeats: string[];
   allSeats: Seat[][];
-  totalPrice: number;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   onClose: () => void;
+  isSubmitting?: boolean;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   selectedSeats,
   allSeats,
-  totalPrice,
   onConfirm,
   onClose,
+  isSubmitting = false,
 }) => {
   const flatSeats = allSeats.flat();
   const details = selectedSeats.map((id) => flatSeats.find((s) => s.id === id));
@@ -46,7 +46,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             </div>
             <div>
               <h3 className="font-black text-base-content">
-                ยืนยันการจองที่นั่ง
+                ยืนยันการอัปเดตที่นั่ง
               </h3>
               <p className="text-xs text-base-content/50">
                 กรุณาตรวจสอบข้อมูลก่อนยืนยัน
@@ -74,34 +74,26 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       ที่นั่ง {seat.label}
                     </span>
                   </div>
-                  <span className="text-sm font-bold text-primary">
-                    ฿{seat.price.toLocaleString()}
-                  </span>
                 </div>
               ),
           )}
-
-          <div className="flex justify-between items-center pt-2">
-            <span className="font-black text-base-content">ยอดรวมทั้งสิ้น</span>
-            <span className="text-2xl font-black text-primary">
-              ฿{totalPrice.toLocaleString()}
-            </span>
-          </div>
         </div>
 
         {/* Actions */}
         <div className="p-5 pt-0 flex gap-3">
           <button
             onClick={onClose}
+            disabled={isSubmitting}
             className="btn btn-ghost flex-1 rounded-2xl border border-base-300"
           >
             ยกเลิก
           </button>
           <button
             onClick={onConfirm}
+            disabled={isSubmitting}
             className="btn btn-primary flex-1 rounded-2xl font-bold shadow-lg shadow-primary/30"
           >
-            ชำระเงิน
+            {isSubmitting ? "กำลังบันทึก..." : "ยืนยันที่นั่ง"}
           </button>
         </div>
       </div>

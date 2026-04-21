@@ -1,5 +1,8 @@
 import { api } from "@/src/lib/axios";
-import { CreateRegistration } from "@/types/registration.interface";
+import {
+  CreateRegistration,
+  UpdateRegistrationSeatPayload,
+} from "@/types/registration.interface";
 
 export const getRegistrations = async (params: URLSearchParams) => {
   try {
@@ -32,6 +35,22 @@ export const createRegistrationSeat = async (payload: CreateRegistration) => {
     return response.data;
   } catch (error) {
     console.error("Error creating registration:", error);
+    throw error;
+  }
+};
+
+export const updateRegistrationSeat = async (
+  registrationId: string,
+  payload: UpdateRegistrationSeatPayload,
+) => {
+  try {
+    const response = await api.patch(`/registration/${registrationId}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error updating registration seat for registration ID ${registrationId}:`,
+      error,
+    );
     throw error;
   }
 };

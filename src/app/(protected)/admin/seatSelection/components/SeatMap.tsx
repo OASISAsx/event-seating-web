@@ -15,8 +15,6 @@ export const SeatMap: React.FC<SeatMapProps> = ({
   selectedSeats,
   onSeatClick,
 }) => {
-  console.log("Rendering SeatMap with seats:", seats);
-  console.log("Selected seats:", selectedSeats);
   return (
     <div className="flex flex-col items-center gap-2 w-full">
       {/* Stage / Screen */}
