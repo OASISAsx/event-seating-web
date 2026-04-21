@@ -1,11 +1,19 @@
 "use client";
 
 import { Toast } from "@/src/lib/toast";
-import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  DragEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type Props = {
   value: string;
   fileName?: string;
+  selectedFile?: File | null;
   uploading?: boolean;
   onSelect: (file: File | null) => void;
 };
@@ -13,13 +21,12 @@ type Props = {
 export default function ImageUpload({
   value,
   fileName,
+  selectedFile,
   uploading = false,
   onSelect,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState(value);
   const [isDragging, setIsDragging] = useState(false);
-  const [localFileName, setLocalFileName] = useState(fileName ?? "");
 
   const normalizePreviewUrl = (url: string) => {
     if (url.startsWith("http//")) {
@@ -33,34 +40,28 @@ export default function ImageUpload({
     return url;
   };
 
-  useEffect(() => {
-    setPreview(normalizePreviewUrl(value));
-  }, [value]);
-
-  useEffect(() => {
-    setLocalFileName(fileName ?? "");
-  }, [fileName]);
+  const remotePreview = useMemo(() => normalizePreviewUrl(value), [value]);
+  const localPreview = useMemo(
+    () => (selectedFile ? URL.createObjectURL(selectedFile) : ""),
+    [selectedFile],
+  );
+  const preview = localPreview || remotePreview;
+  const displayFileName = selectedFile?.name || fileName || remotePreview;
 
   useEffect(() => {
     return () => {
-      if (preview.startsWith("blob:")) {
-        URL.revokeObjectURL(preview);
+      if (localPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(localPreview);
       }
     };
-  }, [preview]);
+  }, [localPreview]);
 
-  const setFilePreview = (file: File) => {
+  const setFileSelection = (file: File) => {
     if (!file.type.startsWith("image/")) {
       Toast.error("Please select an image file");
       return;
     }
 
-    if (preview.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
-    }
-
-    setPreview(URL.createObjectURL(file));
-    setLocalFileName(file.name);
     onSelect(file);
   };
 
@@ -71,7 +72,7 @@ export default function ImageUpload({
       return;
     }
 
-    setFilePreview(file);
+    setFileSelection(file);
     event.target.value = "";
   };
 
@@ -84,16 +85,10 @@ export default function ImageUpload({
       return;
     }
 
-    setFilePreview(file);
+    setFileSelection(file);
   };
 
   const handleRemove = () => {
-    if (preview.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
-    }
-
-    setPreview("");
-    setLocalFileName("");
     onSelect(null);
   };
 
@@ -125,7 +120,7 @@ export default function ImageUpload({
           <p className="text-sm text-gray-500">
             {uploading ? "Uploading image..." : "Click or drag image here"}
           </p>
-          <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP, GIF</p>
+          <p className="mt-1 text-xs text-gray-400">PNG, JPG, WEBP, GIF</p>
         </div>
       )}
 
@@ -134,14 +129,14 @@ export default function ImageUpload({
           <div className="relative h-48 w-full overflow-hidden rounded-xl border border-base-content/10 bg-base-200">
             <img
               src={preview}
-              alt={localFileName || "event image"}
+              alt={displayFileName || "event image"}
               className="h-full w-full object-cover"
             />
           </div>
 
           <div className="flex items-center justify-between gap-3">
             <span className="truncate text-sm text-base-content/70">
-              {uploading ? "Uploading..." : localFileName || value}
+              {uploading ? "Uploading..." : displayFileName}
             </span>
 
             <div className="flex gap-2">

@@ -4,6 +4,11 @@ import ImageUpload from "@/src/app/components/ImageUpload";
 import { Toast } from "@/src/lib/toast";
 import { useEvent } from "@/store/event.store";
 import { useUploadStore } from "@/store/upload.store";
+
+import ImageUpload from "@/src/app/components/ImageUpload";
+import { Toast } from "@/src/lib/toast";
+import { useEvent } from "@/store/event.store";
+import { useUploadStore } from "@/store/upload.store";
 import { Events } from "@/types/event.interface";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -59,6 +64,14 @@ export default function DialogCreateUpdate({
   } = useUploadStore();
   const [form, setForm] = useState(() => getFormFromEvent(fetchData));
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { createEvent, loading } = useEvent();
+  const {
+    uploadFile,
+    loading: uploadLoading,
+    reset: resetUpload,
+  } = useUploadStore();
+  const [form, setForm] = useState(() => getFormFromEvent(fetchData));
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (dialog) {
@@ -73,7 +86,62 @@ export default function DialogCreateUpdate({
     setForm(getFormFromEvent(fetchData));
     setSelectedFile(null);
     resetUpload();
+    setForm(getFormFromEvent(fetchData));
+    setSelectedFile(null);
+    resetUpload();
     onClose();
+  };
+
+  const handleChange = (
+    name: keyof typeof initialForm,
+    value: string | number | boolean,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!form.name || !form.location || !form.startDate || !form.endDate) {
+      Toast.error("Please fill in required fields");
+      return;
+    }
+
+    if (!form.imageEvent && !selectedFile) {
+      Toast.error("Please upload event image");
+      return;
+    }
+
+    try {
+      let imageEvent = form.imageEvent;
+
+      if (selectedFile) {
+        imageEvent = await uploadFile(selectedFile);
+      }
+
+      await createEvent({
+        id: form.id || undefined,
+        name: form.name,
+        description: form.description,
+        imageEvent,
+        location: form.location,
+        startDate: new Date(form.startDate).toISOString(),
+        endDate: new Date(form.endDate).toISOString(),
+        seatsPerRow: Number(form.seatsPerRow),
+        totalSeats: Number(form.totalSeats),
+      });
+
+      Toast.success(fetchData ? "Event updated" : "Event created");
+      setForm(initialForm);
+      setSelectedFile(null);
+      resetUpload();
+      closeDialog();
+    } catch {
+      Toast.error(fetchData ? "Update event failed" : "Create event failed");
+    }
   };
 
   const handleChange = (
@@ -133,12 +201,16 @@ export default function DialogCreateUpdate({
       <div className="modal-box relative rounded-2xl bg-neutral max-w-2xl">
         <button
           type="button"
+          type="button"
           onClick={closeDialog}
+          className="absolute right-3 top-3 cursor-pointer"
           className="absolute right-3 top-3 cursor-pointer"
         >
           x
+          x
         </button>
 
+        <h3 className="mb-4 text-xl font-bold">
         <h3 className="mb-4 text-xl font-bold">
           {fetchData ? "Edit Event" : "Create Event"}
         </h3>
@@ -164,7 +236,58 @@ export default function DialogCreateUpdate({
               onChange={(e) => handleChange("name", e.target.value)}
               className="input input-bordered w-full"
               required
+              required
             />
+
+            <input
+              type="text"
+              placeholder="Location"
+              value={form.location}
+              onChange={(e) => handleChange("location", e.target.value)}
+              className="input input-bordered w-full"
+              required
+            />
+
+            <input
+              type="datetime-local"
+              value={form.startDate}
+              onChange={(e) => handleChange("startDate", e.target.value)}
+              className="input input-bordered w-full"
+              required
+            />
+
+            <input
+              type="datetime-local"
+              value={form.endDate}
+              onChange={(e) => handleChange("endDate", e.target.value)}
+              className="input input-bordered w-full"
+              required
+            />
+
+            <input
+              type="number"
+              min={0}
+              placeholder="Seats Per Row"
+              value={form.seatsPerRow}
+              onChange={(e) =>
+                handleChange("seatsPerRow", Number(e.target.value))
+              }
+              className="input input-bordered w-full"
+              required
+            />
+
+            <input
+              type="number"
+              min={0}
+              placeholder="Total Seats"
+              value={form.totalSeats}
+              onChange={(e) =>
+                handleChange("totalSeats", Number(e.target.value))
+              }
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
 
             <input
               type="text"
@@ -222,12 +345,28 @@ export default function DialogCreateUpdate({
             onChange={(e) => handleChange("description", e.target.value)}
             className="textarea textarea-bordered min-h-28 w-full bg-white text-black"
           />
+          <textarea
+            placeholder="Description"
+            value={form.description}
+            onChange={(e) => handleChange("description", e.target.value)}
+            className="textarea textarea-bordered min-h-28 w-full bg-white text-black"
+          />
 
           <div className="modal-action mt-6">
             <button type="button" className="btn" onClick={closeDialog}>
               Cancel
             </button>
 
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading || uploadLoading}
+            >
+              {loading || uploadLoading
+                ? "Saving..."
+                : fetchData
+                  ? "Update"
+                  : "Create"}
             <button
               type="submit"
               className="btn btn-primary"
