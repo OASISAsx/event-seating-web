@@ -1,41 +1,31 @@
 "use client";
 
-import { useState, useRef, useCallback, DragEvent, ChangeEvent } from "react";
-import Image from "next/image";
+import { Toast } from "@/src/lib/toast";
+import {
+  ChangeEvent,
+  DragEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-interface UploadedImage {
-  id: string;
-  file: File;
-  preview: string;
-  progress: number;
-  status: "uploading" | "done" | "error";
-}
+type Props = {
+  value: string;
+  fileName?: string;
+  uploading?: boolean;
+  onSelect: (file: File | null) => void;
+};
 
-export default function ImageUpload() {
-  const [images, setImages] = useState<UploadedImage[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
+export default function ImageUpload({
+  value,
+  fileName,
+  uploading = false,
+  onSelect,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const simulateUpload = (id: string) => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 20 + 5;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setImages((prev) =>
-          prev.map((img) =>
-            img.id === id ? { ...img, progress: 100, status: "done" } : img,
-          ),
-        );
-      } else {
-        setImages((prev) =>
-          prev.map((img) => (img.id === id ? { ...img, progress } : img)),
-        );
-      }
-    }, 200);
-  };
-
+  const [preview, setPreview] = useState(value);
+  const [isDragging, setIsDragging] = useState(false);
   const normalizePreviewUrl = (url: string) => {
     if (url.startsWith("http//")) {
       return url.replace("http//", "http://");
@@ -48,45 +38,56 @@ export default function ImageUpload() {
     return url;
   };
 
-  const addFiles = useCallback((files: FileList | File[]) => {
-    const fileArray = Array.from(files).filter((f) =>
-      f.type.startsWith("image/"),
-    );
+  const remotePreview = useMemo(() => normalizePreviewUrl(value), [value]);
+  const localPreview = useMemo(
+    () => (selectedFile ? URL.createObjectURL(selectedFile) : ""),
+    [selectedFile],
+  );
+  const preview = localPreview || remotePreview;
+  const displayFileName = selectedFile?.name || fileName || remotePreview;
 
-    const newImages: UploadedImage[] = fileArray.map((file) => ({
-      id: `${Date.now()}-${Math.random()}`,
-      file,
-      preview: URL.createObjectURL(file),
-      progress: 0,
-      status: "uploading",
-    }));
+  useEffect(() => {
+    return () => {
+      if (localPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(localPreview);
+      }
+    };
+  }, [localPreview]);
 
-    setImages((prev) => [...prev, ...newImages]);
-    newImages.forEach((img) => simulateUpload(img.id));
-  }, []);
+  const setFileSelection = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      Toast.error("Please select an image file");
+      return;
+    }
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    onSelect(file);
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setFileSelection(file);
+    event.target.value = "";
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
+
+    const file = event.dataTransfer.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setFileSelection(file);
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) addFiles(e.target.files);
-  };
-
-  const removeImage = (id: string) => {
-    setImages((prev) => {
-      const img = prev.find((i) => i.id === id);
-      if (img) URL.revokeObjectURL(img.preview);
-      return prev.filter((i) => i.id !== id);
-    });
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  const handleRemove = () => {
+    onSelect(null);
   };
 
   return (
@@ -157,54 +158,20 @@ export default function ImageUpload() {
         </div>
       )}
 
-      {/* File List */}
-      {images.length > 0 && (
-        <div className="mt-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400">{images.length} ไฟล์</span>
-            <button
-              onClick={() => {
-                images.forEach((img) => URL.revokeObjectURL(img.preview));
-                setImages([]);
-              }}
-              className="text-xs text-gray-400 hover:text-red-400 transition-colors"
-            >
-              ลบทั้งหมด
-            </button>
+      {preview && (
+        <div className="space-y-3">
+          <div className="relative h-48 w-full overflow-hidden rounded-xl border border-base-content/10 bg-base-200">
+            <img
+              src={preview}
+              alt={localFileName || "event image"}
+              className="h-full w-full object-cover"
+            />
           </div>
 
-          {images.map((img) => (
-            <div
-              key={img.id}
-              className="flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 bg-gray-50 group"
-            >
-              <div className="relative w-10 h-10 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
-                <Image
-                  src={img.preview}
-                  alt={img.file.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              <div className="flex-1 min-w-0 ">
-                <p className="text-sm text-gray-700 truncate leading-tight">
-                  {img.file.name}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-300 ${img.status === "done" ? "bg-emerald-400" : "bg-violet-400"}`}
-                      style={{ width: `${img.progress}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-gray-400 flex-shrink-0">
-                    {img.status === "done"
-                      ? formatSize(img.file.size)
-                      : `${Math.round(img.progress)}%`}
-                  </span>
-                </div>
-              </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="truncate text-sm text-base-content/70">
+              {uploading ? "Uploading..." : localFileName || value}
+            </span>
 
               <button
                 onClick={() => removeImage(img.id)}

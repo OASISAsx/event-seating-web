@@ -35,8 +35,8 @@ export interface CreateEvent {
   endDate: string;
   seatsPerRow: number;
   totalSeats: number;
-  isActive: boolean;
-  status: string;
-  registrations: Registration[];
-  seats: Seat[];
+  isActive?: boolean;
+  status?: string;
+  registrations?: Registration[];
+  seats?: Seat[];
 }
