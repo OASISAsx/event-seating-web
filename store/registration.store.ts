@@ -2,6 +2,7 @@ import {
   createRegistrationSeat,
   getRegistrations,
   getRegistrationsByEvent,
+  updateRegistrationSeat as updateRegistrationSeatService,
 } from "@/services/registration.service";
 import { Toast } from "@/src/lib/toast";
 import { PaginationParams } from "@/types/paginationParams";
@@ -175,6 +176,38 @@ export const useRegistration = create<useRegistrationStore>((set, get) => ({
       });
       Toast.error(get().error || "Something went wrong");
 
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  updateRegistrationSeat: async (registrationId, payload) => {
+    try {
+      set({ loading: true, error: "" });
+
+      const res = await updateRegistrationSeatService(registrationId, payload);
+      const updatedRegistration: Registration = res.data ?? res;
+
+      set((state) => ({
+        registrationByEventId: updatedRegistration,
+        registration: state.registration.map((item) =>
+          item.id === updatedRegistration.id ? updatedRegistration : item,
+        ),
+        registrationByEvent: state.registrationByEvent?.map((item) =>
+          item.id === updatedRegistration.id ? updatedRegistration : item,
+        ) ?? null,
+      }));
+
+      Toast.success("อัปเดตที่นั่งสำเร็จ");
+
+      return updatedRegistration;
+    } catch (err) {
+      const error =
+        err instanceof Error ? err.message : "Failed to update registration";
+
+      set({ error });
+      Toast.error(error);
       throw err;
     } finally {
       set({ loading: false });

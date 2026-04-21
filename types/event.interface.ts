@@ -14,7 +14,7 @@ export interface Events {
   isActive: boolean;
   status: string;
   registrations: Registration[];
-  seat: Seat[];
+  seats: Seat[];
 }
 
 export interface UseEventsStore {
@@ -36,4 +36,8 @@ export interface CreateEvent {
   endDate: string;
   seatsPerRow: number;
   totalSeats: number;
+  isActive: boolean;
+  status: string;
+  registrations: Registration[];
+  seats: Seat[];
 }

@@ -11,8 +11,8 @@ export interface Registration {
   status: string;
   eventId: string;
   event: Events;
-  seatId: string;
-  seat: Seat[];
+  seatId: string | null;
+  seat: Seat | Seat[] | null;
 }
 
 export interface useRegistrationStore extends PaginationParams {
@@ -29,6 +29,10 @@ export interface useRegistrationStore extends PaginationParams {
   addRegistration: (item: Registration) => void;
   fetchRegistrationByEvent: (eventId: string) => Promise<void>;
   createRegistration: (payload: CreateRegistration) => Promise<void>;
+  updateRegistrationSeat: (
+    registrationId: string,
+    payload: UpdateRegistrationSeatPayload,
+  ) => Promise<Registration>;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   reset: () => void;
@@ -45,4 +49,8 @@ export interface CreateRegistration {
   phone: string;
   email: string;
   eventId?: string;
+}
+
+export interface UpdateRegistrationSeatPayload {
+  seatId: string;
 }

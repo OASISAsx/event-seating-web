@@ -1,21 +1,33 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Seat } from "../types/seat.interface";
 
 const MAX_SEATS = 1;
 
-export function useSeatSelection(initialSeats: Seat[][]) {
-  const [seats] = useState<Seat[][]>(initialSeats);
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+export function useSeatSelection(
+  seats: Seat[][],
+  initialSelectedSeats: string[] = [],
+) {
+  const [selectedSeats, setSelectedSeats] =
+    useState<string[]>(initialSelectedSeats);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
+
+  useEffect(() => {
+    setSelectedSeats(initialSelectedSeats);
+  }, [initialSelectedSeats]);
 
   const handleSeatClick = useCallback((seatId: string) => {
     setSelectedSeats((prev) => {
       if (prev.includes(seatId)) {
         return prev.filter((id) => id !== seatId);
       }
+
+      if (MAX_SEATS === 1) {
+        return [seatId];
+      }
+
       if (prev.length >= MAX_SEATS) return prev;
       return [...prev, seatId];
     });
@@ -29,20 +41,15 @@ export function useSeatSelection(initialSeats: Seat[][]) {
     if (selectedSeats.length > 0) setIsModalOpen(true);
   }, [selectedSeats.length]);
 
-  const handleConfirmBooking = useCallback(() => {
+  const handleConfirmBooking = useCallback((seatId: string) => {
     setIsModalOpen(false);
     setIsConfirmed(true);
-    setSelectedSeats([]);
+    setSelectedSeats(seatId ? [seatId] : []);
   }, []);
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
-
-  const totalPrice = selectedSeats.reduce((sum, id) => {
-    const seat = seats.flat().find((s) => s.id === id);
-    return sum + (seat?.price ?? 0);
-  }, 0);
 
   return {
     seats,
@@ -50,7 +57,6 @@ export function useSeatSelection(initialSeats: Seat[][]) {
     isModalOpen,
     isConfirmed,
     maxSeats: MAX_SEATS,
-    totalPrice,
     handleSeatClick,
     handleRemoveSeat,
     handleConfirmOpen,
