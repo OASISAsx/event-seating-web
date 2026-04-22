@@ -29,9 +29,10 @@ export const useChatStore = create<UseChatStore>((set, get) => ({
     const socketUrl = getSocketNamespaceUrl("/chat");
 
     const socketInstance = io(socketUrl, {
-      path: getSocketPath("/chat"),
+      path: getSocketPath(),
       query: { userId },
       transports: ["polling", "websocket"],
+      withCredentials: true,
     });
 
     set({ userId, userName: userName || userId });

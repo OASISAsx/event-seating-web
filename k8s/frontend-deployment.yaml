@@ -28,6 +28,8 @@ spec:
             - name: NEXTAUTH_URL
               value: "https://event-seat.elitefund.fun"
             - name: NEXTAUTH_SECRET
+            - name: NEXT_PUBLIC_SOCKET_IO_PATH
+              value: "/api/socket.io"
               valueFrom:
                 secretKeyRef:
                   name: frontend-secrets

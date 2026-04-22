@@ -2,25 +2,12 @@ const trimTrailingSlash = (value: string) => value.replace(/\/+$/, "");
 
 const stripApiSuffix = (value: string) => value.replace(/\/api\/?$/, "");
 
+const DEFAULT_SOCKET_IO_PATH = "/api/socket.io";
+
 const normalizeSocketBaseUrl = (value?: string) => {
   if (!value) return undefined;
 
   return trimTrailingSlash(stripApiSuffix(value));
-};
-
-const normalizePathname = (value?: string) => {
-  if (!value || value === "/") return "";
-  return trimTrailingSlash(value);
-};
-
-const tryParseUrl = (value?: string) => {
-  if (!value) return undefined;
-
-  try {
-    return new URL(value);
-  } catch {
-    return undefined;
-  }
 };
 
 export const getSocketBaseUrl = () => {
@@ -39,19 +26,8 @@ export const getSocketBaseUrl = () => {
   return "";
 };
 
-export const getSocketPath = (namespace?: string) => {
-  const configuredChatUrl = tryParseUrl(process.env.NEXT_PUBLIC_CHAT_WS_URL);
-  const normalizedNamespace = normalizePathname(namespace);
-
-  if (
-    configuredChatUrl &&
-    normalizedNamespace &&
-    normalizePathname(configuredChatUrl.pathname) === normalizedNamespace
-  ) {
-    return `${normalizedNamespace}/socket.io`;
-  }
-
-  return "/socket.io";
+export const getSocketPath = () => {
+  return process.env.NEXT_PUBLIC_SOCKET_IO_PATH || DEFAULT_SOCKET_IO_PATH;
 };
 
 export const getSocketNamespaceUrl = (namespace?: string) => {
