@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import { create } from "zustand";
 import { getChatMessages, getChatRoomStats, getAdmins } from "@/services/chat.service";
+import { getSocketNamespaceUrl } from "@/src/lib/socket-url";
 import { ChatMessage, ChatRoom, UseChatStore } from "@/types/chat.interface";
 
 export const useChatStore = create<UseChatStore>((set, get) => ({
@@ -25,13 +26,11 @@ export const useChatStore = create<UseChatStore>((set, get) => ({
     // Disconnect old socket if exists
     existing?.disconnect();
 
-    const socketUrl =
-      process.env.NEXT_PUBLIC_CHAT_WS_URL || "http://localhost:8080/chat";
+    const socketUrl = getSocketNamespaceUrl("/chat");
 
     const socketInstance = io(socketUrl, {
       query: { userId },
-      transports: ["websocket", "polling"],
-      withCredentials: true,
+      transports: ["polling", "websocket"],
     });
 
     set({ userId, userName: userName || userId });
@@ -44,6 +43,11 @@ export const useChatStore = create<UseChatStore>((set, get) => ({
     socketInstance.on("disconnect", () => {
       set({ isConnected: false });
       console.log("Chat disconnected");
+    });
+
+    socketInstance.on("connect_error", (error) => {
+      set({ isConnected: false });
+      console.error("Chat connect error:", error.message);
     });
 
     // รับข้อความใหม่
@@ -172,11 +176,11 @@ export const useChatStore = create<UseChatStore>((set, get) => ({
     }
   },
 
-  fetchAdmins: async () => {
-    const { userId } = get();
-    if (!userId) return;
+  fetchAdmins: async (adminId?: string) => {
+    const currentAdminId = adminId || get().userId;
+    if (!currentAdminId) return;
     try {
-      const res = await getAdmins(userId);
+      const res = await getAdmins(currentAdminId);
       const data = res.data ?? res;
       const list = Array.isArray(data) ? data : [];
       const rooms: ChatRoom[] = list.map(
