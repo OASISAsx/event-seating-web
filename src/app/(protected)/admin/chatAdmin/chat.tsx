@@ -50,12 +50,12 @@ const Chat = () => {
     };
   }, [session?.user?.id, session?.user?.name]);
 
-  // Fetch admin list when connected
+  // Fetch admin list as soon as session is available
   useEffect(() => {
-    if (isConnected && userId) {
-      useChatStore.getState().fetchAdmins();
+    if (session?.user?.id) {
+      useChatStore.getState().fetchAdmins(session.user.id);
     }
-  }, [isConnected, userId]);
+  }, [session?.user?.id]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

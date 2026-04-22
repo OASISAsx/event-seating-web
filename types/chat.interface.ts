@@ -58,7 +58,7 @@ export interface UseChatStore {
   setCurrentRoom: (roomId: string) => void;
   addRoom: (room: ChatRoom) => void;
   fetchRoomStats: (roomId: string) => Promise<void>;
-  fetchAdmins: () => Promise<void>;
+  fetchAdmins: (adminId?: string) => Promise<void>;
 
   // Actions - Messages
   sendMessage: (content: string) => void;
