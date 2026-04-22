@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { create } from "zustand";
 import { getChatMessages, getChatRoomStats, getAdmins } from "@/services/chat.service";
-import { getSocketNamespaceUrl } from "@/src/lib/socket-url";
+import { getSocketNamespaceUrl, getSocketPath } from "@/src/lib/socket-url";
 import { ChatMessage, ChatRoom, UseChatStore } from "@/types/chat.interface";
 
 export const useChatStore = create<UseChatStore>((set, get) => ({
@@ -29,6 +29,7 @@ export const useChatStore = create<UseChatStore>((set, get) => ({
     const socketUrl = getSocketNamespaceUrl("/chat");
 
     const socketInstance = io(socketUrl, {
+      path: getSocketPath("/chat"),
       query: { userId },
       transports: ["polling", "websocket"],
     });

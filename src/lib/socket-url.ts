@@ -8,6 +8,21 @@ const normalizeSocketBaseUrl = (value?: string) => {
   return trimTrailingSlash(stripApiSuffix(value));
 };
 
+const normalizePathname = (value?: string) => {
+  if (!value || value === "/") return "";
+  return trimTrailingSlash(value);
+};
+
+const tryParseUrl = (value?: string) => {
+  if (!value) return undefined;
+
+  try {
+    return new URL(value);
+  } catch {
+    return undefined;
+  }
+};
+
 export const getSocketBaseUrl = () => {
   const fromSocketUrl = normalizeSocketBaseUrl(
     process.env.NEXT_PUBLIC_API_URL_SOCKET,
@@ -22,6 +37,21 @@ export const getSocketBaseUrl = () => {
   }
 
   return "";
+};
+
+export const getSocketPath = (namespace?: string) => {
+  const configuredChatUrl = tryParseUrl(process.env.NEXT_PUBLIC_CHAT_WS_URL);
+  const normalizedNamespace = normalizePathname(namespace);
+
+  if (
+    configuredChatUrl &&
+    normalizedNamespace &&
+    normalizePathname(configuredChatUrl.pathname) === normalizedNamespace
+  ) {
+    return `${normalizedNamespace}/socket.io`;
+  }
+
+  return "/socket.io";
 };
 
 export const getSocketNamespaceUrl = (namespace?: string) => {
