@@ -122,53 +122,55 @@ const Chat = () => {
   const selectedAdmin = rooms.find((r) => r.id === currentRoom);
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-slate-950 text-slate-100">
       {/* Backdrop overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 md:hidden"
+          className="fixed inset-0 z-20 bg-black/60 backdrop-blur-[1px] md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}
+        className={`fixed inset-y-0 left-0 z-30 w-72 border-r border-slate-800/80 bg-slate-900/95 shadow-2xl shadow-black/30 backdrop-blur transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}
       >
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-800">Chat Support</h2>
+        <div className="flex items-center justify-between border-b border-slate-800 p-4">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-100">
+            Chat Support
+          </h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden text-gray-500 hover:text-gray-700"
+            className="text-slate-400 transition hover:text-slate-200 md:hidden"
           >
             <FiX size={24} />
           </button>
         </div>
 
-        <div className="p-3 border-b border-gray-200">
+        <div className="border-b border-slate-800 p-3">
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               placeholder="Search conversations..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-xl border border-slate-700 bg-slate-800/90 py-2 pr-4 pl-10 text-sm text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/60 focus:outline-none"
             />
           </div>
         </div>
 
-        <div className="overflow-y-auto h-[calc(100vh-140px)]">
+        <div className="h-[calc(100vh-140px)] overflow-y-auto">
           {rooms.length === 0 && (
-            <div className="p-4 text-center text-gray-400 text-sm">
+            <div className="p-4 text-center text-sm text-slate-500">
               No other admins found
             </div>
           )}
           {rooms.map((room) => (
             <div
               key={room.id}
-              className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+              className={`cursor-pointer border-b border-slate-800/80 p-4 transition-colors ${
                 currentRoom === room.id
-                  ? "bg-blue-50 border-l-4 border-l-blue-500"
-                  : ""
+                  ? "border-l-4 border-l-cyan-400 bg-slate-800/80"
+                  : "hover:bg-slate-800/60"
               }`}
               onClick={() => {
                 setCurrentRoom(room.id);
@@ -176,16 +178,14 @@ const Chat = () => {
               }}
             >
               <div className="flex items-center">
-                <div className="bg-blue-500 rounded-full p-2 mr-3">
+                <div className="mr-3 rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 p-2 shadow-lg shadow-cyan-900/40">
                   <FiUser className="text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-800 truncate">
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate font-medium text-slate-100">
                     {room.name}
                   </h3>
-                  <p className="text-sm text-gray-600 truncate">
-                    Click to chat
-                  </p>
+                  <p className="truncate text-xs text-slate-400">Click to chat</p>
                 </div>
               </div>
             </div>
@@ -194,26 +194,26 @@ const Chat = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-white p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/80 p-4 backdrop-blur">
           <div className="flex items-center">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden mr-3 text-gray-500 hover:text-gray-700"
+              className="mr-3 text-slate-400 transition hover:text-slate-200 md:hidden"
             >
               <FiMenu size={24} />
             </button>
             <div className="flex items-center">
-              <div className="bg-blue-500 rounded-full p-2 mr-3">
+              <div className="mr-3 rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 p-2 shadow-lg shadow-cyan-900/40">
                 <FiUser className="text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-slate-100">
                   {selectedAdmin?.name || "Select a conversation"}
                 </h3>
                 <p
-                  className={`text-xs ${isConnected ? "text-green-500" : "text-red-500"}`}
+                  className={`text-xs ${isConnected ? "text-emerald-400" : "text-rose-400"}`}
                 >
                   {isConnected ? "Online" : "Offline"}
                 </p>
@@ -222,23 +222,23 @@ const Chat = () => {
           </div>
 
           <div className="flex space-x-4">
-            <button className="text-gray-500 hover:text-gray-700">
+            <button className="text-slate-400 transition hover:text-slate-200">
               <FiSearch size={20} />
             </button>
-            <button className="text-gray-500 hover:text-gray-700">
+            <button className="text-slate-400 transition hover:text-slate-200">
               <FiBell size={20} />
             </button>
-            <button className="text-gray-500 hover:text-gray-700">
+            <button className="text-slate-400 transition hover:text-slate-200">
               <FiMoreVertical size={20} />
             </button>
           </div>
         </div>
 
         {/* Messages Container */}
-        <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-br from-gray-50 to-gray-100">
-          <div className="max-w-3xl mx-auto">
+        <div className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top_left,_#172554_0%,_#020617_45%,_#020617_100%)] p-4">
+          <div className="mx-auto max-w-3xl">
             {messages.length === 0 && (
-              <div className="text-center text-gray-500 mt-8">
+              <div className="mt-8 text-center text-slate-400">
                 <p>No messages yet. Start the conversation!</p>
               </div>
             )}
@@ -250,35 +250,35 @@ const Chat = () => {
               return (
                 <div
                   key={message.id}
-                  className={`flex items-end mb-4 ${isMe ? "justify-end" : "justify-start"}`}
+                  className={`mb-4 flex items-end ${isMe ? "justify-end" : "justify-start"}`}
                 >
                   {!isMe && (
-                    <div className="w-8 h-8 shrink-0 bg-blue-500 rounded-full flex items-center justify-center mr-2">
+                    <div className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500">
                       <FiUser className="text-white" size={14} />
                     </div>
                   )}
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    className={`max-w-xs rounded-2xl px-4 py-2.5 shadow-lg lg:max-w-md ${
                       isMe
-                        ? "bg-blue-500 text-white rounded-br-none"
-                        : "bg-white text-gray-800 rounded-bl-none border border-gray-200"
+                        ? "rounded-br-md bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-cyan-900/40"
+                        : "rounded-bl-md border border-slate-700 bg-slate-800/85 text-slate-100 shadow-black/30"
                     }`}
                   >
                     {!isMe && senderName && (
-                      <p className="text-xs font-semibold text-blue-600 mb-1">
+                      <p className="mb-1 text-xs font-semibold text-cyan-400">
                         {senderName}
                       </p>
                     )}
                     <p>{message.content}</p>
                     <div
-                      className={`flex items-center gap-1 text-xs mt-1 ${
-                        isMe ? "text-blue-200 justify-end" : "text-gray-500"
+                      className={`mt-1 flex items-center gap-1 text-xs ${
+                        isMe ? "justify-end text-cyan-100/90" : "text-slate-400"
                       }`}
                     >
                       <span>{formatTimestamp(message.timestamp)}</span>
                       {isMe && (
-                        <span title={message.isRead ? "อ่านแล้ว" : "ส่งแล้ว"}>
-                          {message.isRead ? "✓✓" : "✓"}
+                        <span title={message.isRead ? "Read" : "Sent"}>
+                          {message.isRead ? "\u2713\u2713" : "\u2713"}
                         </span>
                       )}
                     </div>
@@ -289,19 +289,19 @@ const Chat = () => {
 
             {/* Typing indicator */}
             {typingUsers.size > 0 && (
-              <div className="flex justify-start mb-4">
-                <div className="bg-white border border-gray-200 px-4 py-2 rounded-lg">
+              <div className="mb-4 flex justify-start">
+                <div className="rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-2">
                   <div className="flex space-x-1">
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                       style={{ animationDelay: "0ms" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                       style={{ animationDelay: "150ms" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                       style={{ animationDelay: "300ms" }}
                     ></div>
                   </div>
@@ -314,24 +314,24 @@ const Chat = () => {
         </div>
 
         {/* Input Area */}
-        <div className="bg-white p-4 border-t border-gray-200">
-          <div className="max-w-3xl mx-auto">
+        <div className="border-t border-slate-800 bg-slate-900/90 p-4">
+          <div className="mx-auto max-w-3xl">
             {!isConnected && (
-              <div className="text-center text-red-500 text-sm mb-2">
+              <div className="mb-2 text-center text-sm text-rose-400">
                 Connecting to chat server...
               </div>
             )}
             <div className="flex items-center">
-              <button className="p-2 text-gray-500 hover:text-gray-700">
+              <button className="p-2 text-slate-400 transition hover:text-slate-200">
                 <FiPaperclip size={20} />
               </button>
-              <div className="flex-1 mx-2">
+              <div className="mx-2 flex-1">
                 <textarea
                   value={newMessage}
                   onChange={handleMessageChange}
                   onKeyDown={handleKeyPress}
                   placeholder="Type your message..."
-                  className="w-full px-4 py-2 border text-black border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full resize-none rounded-2xl border border-slate-700 bg-slate-800 px-4 py-2 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/60 focus:outline-none"
                   rows={1}
                   disabled={!isConnected}
                 />
@@ -339,10 +339,10 @@ const Chat = () => {
               <button
                 onClick={handleSendMessage}
                 disabled={!newMessage.trim() || !isConnected}
-                className={`p-2 rounded-full ${
+                className={`rounded-full p-2 transition ${
                   newMessage.trim() && isConnected
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:brightness-110"
+                    : "cursor-not-allowed bg-slate-800 text-slate-600"
                 }`}
               >
                 <FiSend size={20} />
